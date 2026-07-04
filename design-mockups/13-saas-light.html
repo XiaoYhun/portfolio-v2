@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13 — SaaS Light · Diep Pham</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1b2e;
+  --body:#3c4d63;
+  --muted:#64748b;
+  --faint:#94a3b8;
+  --line:#e6eaf1;
+  --line-soft:#eef1f6;
+  --bg:#ffffff;
+  --card:#ffffff;
+  --tint:#f7f9fc;
+  --blue:#2563eb;
+  --blue-soft:#eaf0fe;
+  --green:#16a34a;
+  --green-soft:#e8f7ee;
+  --pink:#fbd8e4;
+  --peri:#cdd9fb;
+  --r:16px;
+  --shadow:0 1px 2px rgba(13,27,46,.04),0 8px 24px -12px rgba(13,27,46,.08);
+}
+*{margin:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--body);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:860px;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(560px 420px at 8% -4%, var(--pink) 0%, transparent 65%),
+    radial-gradient(680px 460px at 94% -6%, var(--peri) 0%, transparent 65%),
+    linear-gradient(180deg,#fdfdff 0%,#ffffff 100%);
+}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+section{padding:54px 0}
+h1,h2,h3{color:var(--ink);letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- buttons & chips ---------- */
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:999px;font-weight:600;font-size:13.5px;padding:10px 20px;transition:all .18s ease;cursor:pointer;border:1px solid transparent}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#16283f;transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(13,27,46,.45)}
+.btn-light{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn-light:hover{border-color:#cdd6e3;transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#1d4fd7;transform:translateY(-1px)}
+.tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:11.5px;font-weight:600;color:var(--blue);letter-spacing:.02em}
+.tag .spark{color:var(--blue)}
+.eyebrow{display:flex;justify-content:center;margin-bottom:14px}
+.eyebrow.left{justify-content:flex-start}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+.nav-in{max-width:1040px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:26px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--ink);font-size:15px}
+.logo .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue),#7c3aed);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+.nav-links{display:flex;gap:4px;margin:0 auto}
+.nav-links a{padding:7px 13px;border-radius:999px;font-size:13.5px;font-weight:500;color:var(--muted);transition:all .15s}
+.nav-links a:hover{color:var(--ink);background:var(--tint)}
+.nav-cta{display:flex;align-items:center;gap:14px}
+.nav-cta .ghost{font-size:13.5px;font-weight:600;color:var(--ink)}
+.nav-cta .ghost:hover{color:var(--blue)}
+
+/* ---------- hero ---------- */
+.hero{padding:58px 0 34px;text-align:center}
+.hero h1{font-size:44px;line-height:1.12;font-weight:800;max-width:660px;margin:0 auto 14px}
+.hero h1 .hl{color:var(--blue)}
+.hero p{max-width:520px;margin:0 auto 22px;color:var(--muted);font-size:15.5px}
+.hero .ctas{display:flex;gap:10px;justify-content:center}
+
+/* ---------- dashboard mock ---------- */
+.shot{margin:36px auto 0;max-width:920px;border-radius:18px;padding:10px;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.4));border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(13,27,46,.25)}
+.browser{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.browser-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line-soft)}
+.dot{width:9px;height:9px;border-radius:50%}
+.browser-url{margin:0 auto;background:var(--tint);border:1px solid var(--line-soft);border-radius:999px;font-size:11px;color:var(--faint);padding:4px 46px}
+.dash{padding:18px 20px 20px;text-align:left}
+.dash-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.dash-head h3{font-size:15px}
+.dash-head span{font-size:11.5px;color:var(--faint)}
+.dash-head .pill{font-size:11px;font-weight:600;color:var(--green);background:var(--green-soft);padding:4px 10px;border-radius:999px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:#fff}
+.stat b{display:block;font-size:22px;color:var(--ink);letter-spacing:-.02em}
+.stat b em{font-style:normal;color:var(--blue)}
+.stat span{font-size:11.5px;color:var(--muted)}
+.chart{border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px;background:#fff}
+.chart .lbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.chart svg{width:100%;height:88px;display:block}
+
+/* ---------- logo band ---------- */
+.logos{padding:40px 0 8px}
+.logos-grid{display:grid;grid-template-columns:220px repeat(4,1fr);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
+.logos-grid .intro{padding:20px;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;justify-content:center;gap:4px}
+.logos-grid .intro h3{font-size:16px;line-height:1.3}
+.logos-grid .intro span{font-size:12px;color:var(--muted)}
+.logo-cell{display:grid;place-items:center;padding:20px 10px;border-right:1px solid var(--line-soft);font-weight:700;color:#8795a9;font-size:14.5px;letter-spacing:.01em;transition:color .2s}
+.logo-cell:last-child{border-right:0}
+.logo-cell:hover{color:var(--ink)}
+.logo-cell small{display:block;text-align:center;font-size:10px;font-weight:500;color:var(--faint);letter-spacing:.08em;margin-top:2px}
+
+/* ---------- split sections ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+.split h2{font-size:27px;line-height:1.2;margin-bottom:8px}
+.split .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+.checks{display:flex;flex-direction:column;gap:6px}
+.check{display:flex;gap:12px;padding:10px 12px;border-radius:12px;transition:background .15s}
+.check:hover{background:var(--tint)}
+.check .ic{flex:0 0 22px;height:22px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:11px;font-weight:800;margin-top:2px}
+.check b{display:block;color:var(--ink);font-size:14px;margin-bottom:1px}
+.check p{font-size:12.5px;color:var(--muted)}
+
+/* visual collage card */
+.visual{border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(160deg,#fdf3f7 0%,#eef2fd 100%);padding:22px;position:relative;min-height:380px;box-shadow:var(--shadow);overflow:hidden}
+.mini{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.code-card{position:absolute;left:22px;top:26px;width:62%;padding:12px 14px;font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:11px;line-height:1.75;color:var(--muted)}
+.code-card .k{color:#7c3aed}.code-card .f{color:var(--blue)}.code-card .s{color:var(--green)}
+.wallet-card{position:absolute;right:20px;top:64px;width:44%;padding:14px}
+.wallet-card .row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted)}
+.wallet-card b{font-size:16px;color:var(--ink)}
+.wallet-card .ok{color:var(--green);font-size:10.5px;font-weight:700;background:var(--green-soft);border-radius:999px;padding:3px 8px}
+.bars-card{position:absolute;left:40px;bottom:26px;width:58%;padding:14px}
+.bars-card .b-row{display:flex;align-items:center;gap:8px;margin-top:7px}
+.bars-card .b-row span{flex:0 0 64px;font-size:10.5px;color:var(--muted)}
+.bar{flex:1;height:7px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),#7c3aed)}
+.chip-float{position:absolute;right:34px;bottom:44px;padding:9px 14px;font-size:11.5px;font-weight:700;color:var(--ink);display:flex;gap:7px;align-items:center}
+.chip-float .dot{background:var(--green);width:7px;height:7px}
+
+/* ---------- experience ---------- */
+.xp-list{display:flex;flex-direction:column;gap:8px}
+.xp{border:1px solid transparent;border-radius:14px;padding:13px 16px;cursor:default;transition:all .18s}
+.xp .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.xp h3{font-size:14.5px}
+.xp .role{color:var(--blue);font-size:12.5px;font-weight:600}
+.xp .period{font-size:11.5px;color:var(--faint);white-space:nowrap}
+.xp ul{margin:8px 0 0 0;padding:0;list-style:none;display:none}
+.xp li{font-size:12.5px;color:var(--muted);padding:3px 0 3px 18px;position:relative}
+.xp li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:10px;font-weight:800}
+.xp.active{background:#fff;border-color:var(--line);box-shadow:var(--shadow)}
+.xp.active ul{display:block}
+.xp:not(.active):hover{background:var(--tint)}
+
+/* ---------- stack ---------- */
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stack-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;transition:all .18s}
+.stack-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#d8e0eb}
+.stack-card .ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:15px;margin-bottom:10px}
+.stack-card h3{font-size:14px;margin-bottom:8px}
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill-s{font-size:11px;font-weight:500;color:var(--body);background:var(--tint);border:1px solid var(--line-soft);border-radius:999px;padding:3.5px 9px;transition:all .15s}
+.pill-s:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+
+/* ---------- projects ---------- */
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.proj{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:all .2s;display:flex;flex-direction:column}
+.proj:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(13,27,46,.2)}
+.thumb{height:150px;display:grid;place-items:center;font-weight:800;font-size:20px;letter-spacing:-.02em;color:rgba(255,255,255,.92)}
+.proj .body{padding:15px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.proj .tags{display:flex;gap:5px;flex-wrap:wrap}
+.proj .tags span{font-size:10.5px;font-weight:600;color:var(--muted);background:var(--tint);border:1px solid var(--line-soft);padding:3px 8px;border-radius:999px}
+.proj h3{font-size:15px}
+.proj p{font-size:12.5px;color:var(--muted);flex:1}
+.proj .link{font-size:12.5px;font-weight:700;color:var(--blue)}
+.proj .link span{display:inline-block;transition:transform .18s}
+.proj:hover .link span{transform:translateX(3px)}
+
+/* ---------- CTA ---------- */
+.cta-card{border-radius:20px;border:1px solid var(--line);padding:38px;display:grid;grid-template-columns:1.15fr 1fr;gap:36px;align-items:center;background:
+  radial-gradient(420px 260px at 0% 0%, var(--pink) 0%, transparent 62%),
+  radial-gradient(460px 300px at 100% 100%, var(--peri) 0%, transparent 62%),#fff}
+.cta-card h2{font-size:28px;line-height:1.15;margin-bottom:10px}
+.cta-card .lead{color:var(--muted);font-size:14px;margin-bottom:20px;max-width:400px}
+.cta-feats{display:flex;flex-direction:column;gap:10px}
+.cta-feat{background:rgba(255,255,255,.8);backdrop-filter:blur(4px);border:1px solid var(--line);border-radius:13px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;transition:all .18s}
+.cta-feat:hover{transform:translateX(4px);box-shadow:var(--shadow)}
+.cta-feat .ic{flex:0 0 30px;height:30px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px}
+.cta-feat b{display:block;font-size:13.5px;color:var(--ink)}
+.cta-feat p{font-size:12px;color:var(--muted)}
+
+/* ---------- footer ---------- */
+footer{background:#0b1526;color:#8fa0b8;margin-top:56px;position:relative;overflow:hidden}
+.foot-in{max-width:1040px;margin:0 auto;padding:44px 22px 0;position:relative;z-index:1}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.08)}
+.foot-grid .brand .logo{color:#fff}
+.foot-grid .brand p{font-size:12.5px;margin-top:10px;max-width:240px;color:#71829c}
+.foot-grid h4{color:#fff;font-size:12.5px;font-weight:700;margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase}
+.foot-grid a{display:block;font-size:13px;padding:3.5px 0;color:#8fa0b8;transition:color .15s}
+.foot-grid a:hover{color:#fff}
+.foot-bottom{display:flex;justify-content:space-between;padding:16px 0 110px;font-size:12px;color:#5c6d87}
+.watermark{position:absolute;left:50%;bottom:-38px;transform:translateX(-50%);font-size:150px;font-weight:800;letter-spacing:-.04em;color:rgba(255,255,255,.045);white-space:nowrap;pointer-events:none;line-height:1}
+
+/* ---------- section headers ---------- */
+.sec-head{text-align:center;max-width:520px;margin:0 auto 30px}
+.sec-head h2{font-size:27px;line-height:1.2;margin-bottom:6px}
+.sec-head p{color:var(--muted);font-size:14px}
+
+@media (max-width:900px){
+  .stats,.stack-grid{grid-template-columns:repeat(2,1fr)}
+  .split,.cta-card{grid-template-columns:1fr}
+  .proj-grid{grid-template-columns:1fr}
+  .logos-grid{grid-template-columns:1fr 1fr}
+  .logos-grid .intro{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--line-soft)}
+  .nav-links{display:none}
+  .hero h1{font-size:32px}
+  .watermark{font-size:70px;bottom:-14px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#top"><span class="mark">DP</span>Diep Pham</a>
+    <div class="nav-links">
+      <a href="#top">Home</a><a href="#stack">Stack</a><a href="#experience">Experience</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a class="ghost" href="#">Download CV</a>
+      <a class="btn btn-dark" href="mailto:xiaoyhun@gmail.com" style="padding:8px 16px">Hire Me</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap" id="top">
+  <div class="eyebrow rv"><span class="tag"><span class="spark">●</span> Available for new opportunities</span></div>
+  <h1 class="rv">Building Fast, Reliable <span class="hl">Web &amp; Web3</span> Products.</h1>
+  <p class="rv">Fullstack Engineer — 7+ years across React/Next.js frontends, Python &amp; Golang backends, EVM smart-contract integration and AI-powered features.</p>
+  <div class="ctas rv">
+    <a class="btn btn-dark" href="#projects">View Projects</a>
+    <a class="btn btn-light" href="#contact">Get in Touch</a>
+  </div>
+
+  <div class="shot rv">
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span>
+        <span class="browser-url">diep.dev — engineer overview</span>
+      </div>
+      <div class="dash">
+        <div class="dash-head">
+          <div><h3>Welcome, I'm Diep 👋</h3><span>Ho Chi Minh City, Vietnam · UTC+7</span></div>
+          <span class="pill">● Open to work</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>7<em>+</em></b><span>Years Experience</span></div>
+          <div class="stat"><b>3<em>+</em></b><span>Years Web3</span></div>
+          <div class="stat"><b>4</b><span>Companies</span></div>
+          <div class="stat"><b>10<em>+</em></b><span>Products Shipped</span></div>
+        </div>
+        <div class="chart">
+          <div class="lbl"><span>Shipping activity</span><span>2016 — 2026</span></div>
+          <svg viewBox="0 0 600 90" preserveAspectRatio="none">
+            <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2563eb" stop-opacity=".25"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+            </linearGradient></defs>
+            <path d="M0,74 C60,70 90,62 130,58 C180,53 210,60 260,48 C310,36 340,42 390,30 C440,18 470,26 520,14 C560,6 580,8 600,4 L600,90 L0,90 Z" fill="url(#g)"/>
+            <path d="M0,74 C60,70 90,62 130,58 C180,53 210,60 260,48 C310,36 340,42 390,30 C440,18 470,26 520,14 C560,6 580,8 600,4" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="logos wrap rv">
+  <div class="logos-grid">
+    <div class="intro"><h3>Trusted by teams<br>I shipped with</h3><span>2016 — present</span></div>
+    <div class="logo-cell">◈ IP World<small>SOCIALFI · 2025</small></div>
+    <div class="logo-cell">⬡ UNIBOT<small>DEFI SUITE · 2024</small></div>
+    <div class="logo-cell">◆ Kyber Network<small>KYBERSWAP · 2021–24</small></div>
+    <div class="logo-cell">▰ 2 Clicks Solution<small>ECOMMERCE · 2016–19</small></div>
+  </div>
+</section>
+
+<section class="wrap" id="stack-overview">
+  <div class="split">
+    <div class="visual rv">
+      <div class="mini code-card">
+        <span class="k">const</span> <span class="f">engineer</span> = {<br>
+        &nbsp;&nbsp;frontend: <span class="s">"React / Next.js"</span>,<br>
+        &nbsp;&nbsp;backend: <span class="s">"Python · Golang"</span>,<br>
+        &nbsp;&nbsp;web3: <span class="s">"EVM · ethers · wagmi"</span>,<br>
+        &nbsp;&nbsp;ai: <span class="s">"RAG · LLM tooling"</span>,<br>
+        };
+      </div>
+      <div class="mini wallet-card">
+        <div class="row"><span>Contract call</span><span class="ok">CONFIRMED</span></div>
+        <b>swapExactTokens()</b>
+        <div class="row" style="margin-top:6px"><span>Gas optimized</span><span>−38%</span></div>
+      </div>
+      <div class="mini bars-card">
+        <div style="font-size:11.5px;font-weight:700;color:var(--ink)">Core strengths</div>
+        <div class="b-row"><span>Frontend</span><div class="bar"><i style="width:96%"></i></div></div>
+        <div class="b-row"><span>Web3</span><div class="bar"><i style="width:86%"></i></div></div>
+        <div class="b-row"><span>Backend</span><div class="bar"><i style="width:78%"></i></div></div>
+        <div class="b-row"><span>AI</span><div class="bar"><i style="width:72%"></i></div></div>
+      </div>
+      <div class="mini chip-float"><span class="dot"></span>Performance-tuned</div>
+    </div>
+    <div class="rv">
+      <div class="eyebrow left"><span class="tag">✦ What I Do</span></div>
+      <h2>Everything you need, in one engineer.</h2>
+      <p class="lead">From pixel-perfect frontends to on-chain integrations — I own features end to end.</p>
+      <div class="checks">
+        <div class="check"><span class="ic">✓</span><div><b>Frontend Engineering</b><p>React, Next.js, TypeScript, Tailwind — fast, accessible, animation-rich interfaces.</p></div></div>
+        <div class="check"><span class="ic">✓</span><div><b>Backend &amp; APIs</b><p>Python (FastAPI), Golang and Node.js services with PostgreSQL and Redis.</p></div></div>
+        <div class="check"><span class="ic">✓</span><div><b>Web3 Integration</b><p>Wallet connectivity, EVM smart-contract flows, ethers.js / wagmi in production.</p></div></div>
+        <div class="check"><span class="ic">✓</span><div><b>AI-Powered Features</b><p>RAG pipelines, vector databases, embeddings and LLM integration in real products.</p></div></div>
+        <div class="check"><span class="ic">✓</span><div><b>Performance &amp; UX</b><p>Core Web Vitals, migration wins, and interfaces users actually enjoy.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="experience">
+  <div class="split" style="align-items:start">
+    <div class="rv">
+      <div class="eyebrow left"><span class="tag">✦ Career</span></div>
+      <h2>Where I've shipped.</h2>
+      <p class="lead">Four companies, from eCommerce to DeFi — click through the journey.</p>
+      <div class="xp-list">
+        <div class="xp active">
+          <div class="top"><div><h3>IP World</h3><span class="role">Senior Fullstack Engineer</span></div><span class="period">Jan 2025 — Present</span></div>
+          <ul>
+            <li>React/Next.js frontend for a SocialFi &amp; memecoin launch platform on Story Protocol.</li>
+            <li>Wallet connectivity and smart-contract integration for on-chain launch flows.</li>
+            <li>Golang backend services powering the platform.</li>
+          </ul>
+        </div>
+        <div class="xp">
+          <div class="top"><div><h3>UNIBOT</h3><span class="role">Senior Frontend Engineer</span></div><span class="period">Feb — Dec 2024</span></div>
+          <ul><li>Owned the frontend across revshare, perps, unisol.app/swap and unibot.app.</li></ul>
+        </div>
+        <div class="xp">
+          <div class="top"><div><h3>Kyber Network</h3><span class="role">Frontend Engineer</span></div><span class="period">Aug 2021 — Jan 2024</span></div>
+          <ul><li>KyberSwap trading UX, KyberDAO flows, KyberAI dashboard, Vite migration.</li></ul>
+        </div>
+        <div class="xp">
+          <div class="top"><div><h3>2 Clicks Solution</h3><span class="role">Fullstack Engineer</span></div><span class="period">Apr 2016 — May 2019</span></div>
+          <ul><li>Automotive eCommerce from scratch; .NET / React ticket &amp; form-builder projects.</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="visual rv" style="min-height:420px">
+      <div class="mini" style="position:absolute;inset:22px;padding:0;overflow:hidden">
+        <div class="browser-bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="browser-url">app.unibot — perps dashboard</span></div>
+        <div style="padding:16px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <b style="font-size:13px;color:var(--ink)">Perpetuals</b>
+            <span style="font-size:10.5px;color:var(--green);font-weight:700;background:var(--green-soft);border-radius:99px;padding:3px 9px">LIVE</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+            <div class="stat"><b style="font-size:16px">$2.4M</b><span>24h volume</span></div>
+            <div class="stat"><b style="font-size:16px">12ms</b><span>UI response</span></div>
+          </div>
+          <svg viewBox="0 0 400 120" preserveAspectRatio="none" style="width:100%;height:110px">
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#7c3aed" stop-opacity=".22"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+            </linearGradient></defs>
+            <path d="M0,90 C40,84 60,60 100,66 C140,72 160,40 200,44 C240,48 260,24 300,28 C340,32 370,14 400,10 L400,120 L0,120 Z" fill="url(#g2)"/>
+            <path d="M0,90 C40,84 60,60 100,66 C140,72 160,40 200,44 C240,48 260,24 300,28 C340,32 370,14 400,10" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <span class="pill-s">ethers.js</span><span class="pill-s">wagmi</span><span class="pill-s">React</span><span class="pill-s">Tailwind</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="stack">
+  <div class="sec-head rv">
+    <div class="eyebrow"><span class="tag">✦ Tech Stack</span></div>
+    <h2>The tools I reach for.</h2>
+    <p>A stack sharpened across fintech, DeFi and AI products.</p>
+  </div>
+  <div class="stack-grid">
+    <div class="stack-card rv">
+      <div class="ic" style="background:var(--blue-soft);color:var(--blue)">⚛</div>
+      <h3>Frontend</h3>
+      <div class="pills"><span class="pill-s">React</span><span class="pill-s">Next.js</span><span class="pill-s">TypeScript</span><span class="pill-s">Tailwind CSS</span><span class="pill-s">Redux</span><span class="pill-s">TanStack Query</span><span class="pill-s">Zustand</span><span class="pill-s">Framer Motion</span><span class="pill-s">Three.js</span></div>
+    </div>
+    <div class="stack-card rv" style="transition-delay:.06s">
+      <div class="ic" style="background:var(--green-soft);color:var(--green)">⚙</div>
+      <h3>Backend</h3>
+      <div class="pills"><span class="pill-s">Python · FastAPI</span><span class="pill-s">Golang</span><span class="pill-s">Node.js</span><span class="pill-s">REST APIs</span><span class="pill-s">PostgreSQL</span><span class="pill-s">Redis</span></div>
+    </div>
+    <div class="stack-card rv" style="transition-delay:.12s">
+      <div class="ic" style="background:#f3ecfe;color:#7c3aed">⬡</div>
+      <h3>Web3</h3>
+      <div class="pills"><span class="pill-s">ethers.js</span><span class="pill-s">wagmi</span><span class="pill-s">EVM Contracts</span><span class="pill-s">Wallets</span><span class="pill-s">On-chain Flows</span></div>
+    </div>
+    <div class="stack-card rv" style="transition-delay:.18s">
+      <div class="ic" style="background:#fdeef3;color:#db2777">✳</div>
+      <h3>AI</h3>
+      <div class="pills"><span class="pill-s">RAG</span><span class="pill-s">Vector DBs</span><span class="pill-s">Embeddings</span><span class="pill-s">Prompt Engineering</span><span class="pill-s">LLM Integration</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="projects">
+  <div class="sec-head rv">
+    <div class="eyebrow"><span class="tag">✦ Selected Work</span></div>
+    <h2>Products people actually use.</h2>
+    <p>A few things I've shipped recently — live and in production.</p>
+  </div>
+  <div class="proj-grid">
+    <a class="proj rv" href="https://xno.vn/" target="_blank" rel="noreferrer">
+      <div class="thumb" style="background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#7c3aed)">XNO.vn</div>
+      <div class="body">
+        <div class="tags"><span>Next.js</span><span>TypeScript</span><span>Fintech</span></div>
+        <h3>XNO.vn</h3>
+        <p>Fintech stock platform for Vietnam's market — real-time data, charting, and trading workflows.</p>
+        <span class="link">Visit live site <span>→</span></span>
+      </div>
+    </a>
+    <a class="proj rv" href="https://kyberswap-landingpage.vercel.app/" target="_blank" rel="noreferrer" style="transition-delay:.06s">
+      <div class="thumb" style="background:linear-gradient(135deg,#065f46,#059669 55%,#2dd4bf)">KyberSwap</div>
+      <div class="body">
+        <div class="tags"><span>React</span><span>Animation</span><span>Web3</span></div>
+        <h3>KyberSwap Landing Page</h3>
+        <p>Public marketing site for KyberSwap — performance-tuned, responsive, animation-rich.</p>
+        <span class="link">Visit live site <span>→</span></span>
+      </div>
+    </a>
+    <a class="proj rv" href="https://ymart-delta.vercel.app/" target="_blank" rel="noreferrer" style="transition-delay:.12s">
+      <div class="thumb" style="background:linear-gradient(135deg,#9d174d,#db2777 55%,#f472b6)">YMart</div>
+      <div class="body">
+        <div class="tags"><span>Next.js</span><span>Tailwind</span><span>E-commerce</span></div>
+        <h3>YMart</h3>
+        <p>E-commerce storefront built with Next.js and Tailwind CSS — clean UX, fast by default.</p>
+        <span class="link">Visit live site <span>→</span></span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="wrap" id="contact">
+  <div class="cta-card rv">
+    <div>
+      <div class="eyebrow left"><span class="tag">✦ Ready to Ship</span></div>
+      <h2>Let's build something together.</h2>
+      <p class="lead">Open to fullstack, frontend, and Web3 engineering roles — remote or Ho Chi Minh City.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn btn-dark" href="mailto:xiaoyhun@gmail.com">xiaoyhun@gmail.com</a>
+        <a class="btn btn-light" href="https://github.com/XiaoYhun" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </div>
+    <div class="cta-feats">
+      <div class="cta-feat"><span class="ic">⚡</span><div><b>Fullstack Ownership</b><p>One engineer from database schema to pixel-perfect UI.</p></div></div>
+      <div class="cta-feat"><span class="ic">⬡</span><div><b>Web3 Native</b><p>3+ years shipping DeFi and on-chain products in production.</p></div></div>
+      <div class="cta-feat"><span class="ic">✳</span><div><b>AI-Ready</b><p>Hands-on RAG, embeddings and LLM feature integration.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-grid">
+      <div class="brand">
+        <a class="logo" href="#top"><span class="mark">DP</span>Diep Pham</a>
+        <p>Fullstack Engineer building fast, reliable web &amp; Web3 products for 7+ years.</p>
+      </div>
+      <div><h4>Sections</h4><a href="#stack">Tech Stack</a><a href="#experience">Experience</a><a href="#projects">Projects</a><a href="#contact">Contact</a></div>
+      <div><h4>Projects</h4><a href="https://xno.vn/" target="_blank" rel="noreferrer">XNO.vn</a><a href="https://kyberswap-landingpage.vercel.app/" target="_blank" rel="noreferrer">KyberSwap LP</a><a href="https://ymart-delta.vercel.app/" target="_blank" rel="noreferrer">YMart</a></div>
+      <div><h4>Contact</h4><a href="mailto:xiaoyhun@gmail.com">Email</a><a href="https://github.com/XiaoYhun" target="_blank" rel="noreferrer">GitHub</a><a href="tel:0839082127">Phone</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Diep Pham. All rights reserved.</span><span>Ho Chi Minh City, Vietnam</span></div>
+  </div>
+  <div class="watermark">Diep Pham</div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+}), { rootMargin: '-40px' });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+document.querySelectorAll('.xp').forEach(x => x.addEventListener('click', () => {
+  document.querySelectorAll('.xp').forEach(o => o.classList.remove('active'));
+  x.classList.add('active');
+}));
+</script>
+</body>
+</html>

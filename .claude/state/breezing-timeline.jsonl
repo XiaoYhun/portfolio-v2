@@ -1,0 +1,6 @@
+{"event":"task_completed","teammate":"","task_id":"1","subject":"Write implementation plan for Next.js portfolio","description":"Document architecture, design tokens (violet-neon), section specs, animation specs (reactbits Graini","timestamp":"2026-07-03T22:00:31Z"}
+{"event":"task_completed","teammate":"","task_id":"1","subject":"Task 1: Server scaffold + SessionManager (TDD)","description":"Implement per plan Task 1 via subagent; review; mark in ledger.","timestamp":"2026-07-04T18:24:39Z"}
+{"event":"task_completed","teammate":"","task_id":"2","subject":"Task 2: REST API (TDD)","description":"Implement per plan Task 2 via subagent; review.","timestamp":"2026-07-04T18:33:18Z"}
+{"event":"task_completed","teammate":"","task_id":"3","subject":"Task 3: WebSocket attach layer (TDD)","description":"Implement per plan Task 3 via subagent; review.","timestamp":"2026-07-04T18:49:57Z"}
+{"event":"task_completed","teammate":"","task_id":"4","subject":"Task 4: Server entry point with real pty","description":"Implement per plan Task 4 via subagent; smoke test; review.","timestamp":"2026-07-04T18:54:07Z"}
+{"event":"task_completed","teammate":"","task_id":"5","subject":"Task 5: Client scaffold, sidebar, modal","description":"Implement per plan Task 5 via subagent; review.","timestamp":"2026-07-04T19:52:05Z"}

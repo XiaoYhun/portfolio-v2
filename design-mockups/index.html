@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diep Pham — Portfolio Design Mockups</title>
+<style>
+  :root { --bg:#171310; --card:#211a15; --text:#efe7dc; --muted:#a89a8a; --accent:#e8a04c; }
+  * { margin:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,'Segoe UI',sans-serif; padding:48px 24px; }
+  .wrap { max-width:1080px; margin:0 auto; }
+  h1 { font-size:28px; margin-bottom:8px; }
+  p.sub { color:var(--muted); margin-bottom:36px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+  a.card { display:block; background:var(--card); border:1px solid #3a2e24; border-radius:14px; padding:22px; text-decoration:none; color:var(--text); transition:border-color .2s, transform .2s; }
+  a.card:hover { border-color:var(--accent); transform:translateY(-3px); }
+  .num { color:var(--accent); font-size:13px; letter-spacing:2px; }
+  .card h2 { font-size:19px; margin:6px 0 8px; }
+  .card p { color:var(--muted); font-size:14px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Portfolio Design Mockups</h1>
+  <p class="sub">5 directions for review — pick one (or mix elements) and the Next.js build starts from there.</p>
+  <div class="grid">
+    <a class="card" href="01-ember-panel.html"><span class="num">01</span><h2>Ember Panel</h2><p>The original: sticky left profile panel, warm charcoal + amber/copper accents.</p></a>
+    <a class="card" href="04-terminal.html"><span class="num">04</span><h2>Warm Terminal</h2><p>Developer-brand monospace aesthetic, gruvbox-warm palette, code-comment section headers.</p></a>
+    <a class="card" href="09-emerald-glass.html"><span class="num">09</span><h2>Emerald Glass</h2><p>01's layout in deep green-black with emerald/mint glassmorphism, gradient mesh hero, soft glows.</p></a>
+    <a class="card" href="10-violet-neon.html"><span class="num">10</span><h2>Violet Neon</h2><p>01's layout in near-black indigo with electric violet→magenta gradients and neon glow borders.</p></a>
+    <a class="card" href="11-mono-lime.html"><span class="num">11</span><h2>Mono Lime</h2><p>01's layout as high-contrast modern-brutalist: black/white, sharp corners, one electric lime accent, inverted hovers.</p></a>
+    <a class="card" href="12-ocean-steel.html"><span class="num">12</span><h2>Ocean Steel</h2><p>01's layout in cool slate/steel with cyan aurora hero, frosted cards, precise borders.</p></a>
+    <a class="card" href="13-saas-light.html"><span class="num">13</span><h2>SaaS Light</h2><p>DentalPro-inspired: light pastel washes, top navbar, centered hero + dashboard mock, white cards, dark watermark footer. Tight spacing.</p></a>
+  </div>
+</div>
+</body>
+</html>
