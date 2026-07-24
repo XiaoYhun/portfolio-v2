@@ -3,7 +3,7 @@
   "cwd": "G:\\Develop\\portfolio",
   "duration_minutes": 0,
   "ended_at": "2026-07-24T02:27:28Z",
-  "event_seq": 99,
+  "event_seq": 0,
   "fork_count": 0,
   "git": {
     "branch": "master",
@@ -15,9 +15,7 @@
     "last_checked": "2026-07-24T02:27:20Z",
     "last_error": ""
   },
-  "last_event_id": "event-000099",
-  "last_message_hash": "ed3b1b38e7d1c4d8",
-  "last_message_length": 1588,
+  "last_event_id": "",
   "memory_logged": true,
   "orchestration": {
     "max_state_retries": 3,
@@ -39,5 +37,5 @@
   "started_at": "2026-07-24T02:27:20Z",
   "state": "stopped",
   "state_version": 1,
-  "updated_at": "2026-07-24T08:38:42Z"
+  "updated_at": "2026-07-24T02:27:20Z"
 }

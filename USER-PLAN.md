@@ -22,6 +22,9 @@ Comment: this good layout, animation, sticky left panel is good. I like dark the
 - https://www.uneed.best/?utm_source=chatgpt.com
   Comment: Good website design UI that we can use to copy, i like it font, it color, it details structure, it top nav style with glass,
 
+- https://www.aihero.dev/
+  Comment, good layout and structure, I like this one
+
 ** Design **
 
 - Clean

@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diep Pham — Warm Glass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --canvas-1:#d8d4d1;
+    --canvas-2:#cfcac6;
+    --card-bg:rgba(255,255,255,.92);
+    --card-bg-solid:#fbfaf9;
+    --card-border:rgba(255,255,255,.7);
+    --card-shadow:0 18px 45px rgba(90,60,40,.10);
+    --card-shadow-hover:0 22px 52px rgba(255,106,43,.16);
+    --ink:#2b2724;
+    --body-c:#5c554f;
+    --muted:#8d857e;
+    --label:#a09a94;
+    --accent:#e35d21;
+    --accent2:#ff6a2b;
+    --peach-bg:#ffe3d3;
+    --peach-text:#e35d21;
+    --charcoal:#26221f;
+    --green:#3fbf6b;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:linear-gradient(180deg,var(--canvas-1) 0%,var(--canvas-2) 100%);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    position:relative;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:radial-gradient(600px 500px at 15% 0%, rgba(255,120,70,.18), transparent 65%);
+  }
+
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:.03;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{color:inherit; text-decoration:none;}
+
+  .mono{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:500;
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--label);
+  }
+
+  .page{
+    position:relative;
+    z-index:1;
+    max-width:1180px;
+    margin:0 auto;
+    padding:40px 20px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+  }
+
+  .card{
+    background:var(--card-bg);
+    border-radius:26px;
+    border:1px solid var(--card-border);
+    box-shadow:var(--card-shadow);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+
+  /* ================= HERO ================= */
+  .hero{
+    grid-column:span 2;
+    position:relative;
+    overflow:hidden;
+    padding:24px 26px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    color:#fff;
+    background:
+      radial-gradient(70% 95% at 100% 115%, rgba(255,255,255,.4), transparent 62%),
+      radial-gradient(130% 160% at 80% -20%, #f4470e 0%, #ff6a2b 32%, #ff8a50 62%, #ffab72 100%);
+    box-shadow:0 24px 60px rgba(255,106,43,.35);
+    border:1px solid rgba(255,255,255,.4);
+  }
+  .hero:hover{transform:translateY(-3px);}
+
+  .hero-top{display:flex; align-items:center; gap:14px;}
+  .hero-avatar{
+    width:56px; height:56px;
+    border-radius:16px;
+    background:rgba(255,255,255,.4);
+    border:1px solid rgba(255,255,255,.6);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:20px; color:#fff;
+    flex-shrink:0;
+  }
+  .hero-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    align-self:flex-start;
+    background:rgba(255,255,255,.55);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.6);
+    border-radius:999px;
+    padding:5px 12px;
+    font-size:11px;
+    font-weight:600;
+    color:var(--charcoal);
+  }
+  .hero-dot{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green);}
+  .hero-name{font-weight:800; font-size:30px; line-height:1.1;}
+  .hero-role{font-weight:600; font-size:13px; color:rgba(255,255,255,.9); margin-top:2px;}
+  .hero-bio{font-size:12.5px; line-height:1.6; color:rgba(255,255,255,.92); max-width:520px;}
+  .hero-tags{display:flex; gap:7px; flex-wrap:wrap; margin-top:auto;}
+  .hero-tag{
+    background:rgba(255,255,255,.55);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.6);
+    border-radius:999px;
+    padding:5px 12px;
+    font-size:11px;
+    font-weight:600;
+    color:var(--charcoal);
+  }
+
+  /* ================= CONTACT + EDUCATION ================= */
+  .side-card{
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    font-size:12px;
+    color:var(--body-c);
+  }
+  .side-card:hover{transform:translateY(-3px); box-shadow:var(--card-shadow-hover);}
+  .side-card a.link{color:var(--accent); font-weight:600;}
+  .side-label{margin-top:2px;}
+  .side-label:first-child{margin-top:0;}
+  .side-strong{font-weight:600; color:var(--ink);}
+  .side-muted{color:var(--muted);}
+
+  /* ================= NUMBERS ================= */
+  .numbers{
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .numbers:hover{transform:translateY(-3px); box-shadow:var(--card-shadow-hover);}
+  .numbers-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .num-value{
+    font-weight:800;
+    font-size:24px;
+    background:linear-gradient(135deg,#ff6a2b,#e3411f);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .num-cap{font-size:10.5px; color:var(--muted); margin-top:1px;}
+  .numbers-footer{
+    font-size:11px;
+    color:var(--muted);
+    border-top:1px solid #eee7e1;
+    padding-top:8px;
+  }
+
+  /* ================= TOOLBELT ================= */
+  .toolbelt{
+    grid-column:span 4;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .toolbelt-row{
+    display:flex;
+    justify-content:space-between;
+    gap:4px;
+  }
+  .tool{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    width:70px;
+    padding:8px 2px;
+    border-radius:14px;
+    transition:all .22s ease;
+  }
+  .tool:hover{
+    background:#fff;
+    box-shadow:0 10px 24px rgba(90,60,40,.14);
+    transform:translateY(-3px);
+  }
+  .tool img{width:26px; height:26px; object-fit:contain;}
+  .tool span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    font-weight:500;
+    color:#6b635c;
+    text-align:center;
+    white-space:nowrap;
+  }
+
+  /* ================= PROJECTS ================= */
+  .projects{
+    grid-column:span 4;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
+  .project{
+    background:var(--card-bg-solid);
+    border-radius:26px;
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:var(--card-shadow);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:all .25s ease;
+  }
+  .project:hover{
+    transform:translateY(-3px);
+    border:1px solid rgba(255,106,43,.45);
+    box-shadow:0 18px 40px rgba(255,106,43,.18);
+  }
+  .project-head{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .project-title{font-weight:700; font-size:14.5px; color:var(--ink);}
+  .project-tag{
+    background:var(--peach-bg);
+    color:var(--peach-text);
+    font-size:10px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .project-desc{font-size:11.5px; line-height:1.5; color:var(--body-c);}
+  .project-foot{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:auto;
+    padding-top:4px;
+  }
+  .project-foot img{width:16px; height:16px; object-fit:contain;}
+  .project-link{
+    font-size:11px;
+    font-weight:600;
+    color:var(--accent);
+    margin-left:auto;
+  }
+
+  /* ================= EXPERIENCE ================= */
+  .experience{
+    grid-column:span 2;
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .experience:hover{transform:translateY(-3px); box-shadow:var(--card-shadow-hover);}
+  .exp-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .exp-company{font-weight:700; font-size:14.5px; color:var(--ink);}
+  .exp-role{color:var(--accent); font-weight:600;}
+  .exp-period{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--label);
+    white-space:nowrap;
+  }
+  .exp-blurb{font-size:11px; color:var(--muted); font-style:italic;}
+  .exp-list{
+    margin:0;
+    padding-left:16px;
+    font-size:12px;
+    line-height:1.55;
+    color:var(--body-c);
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .exp-chips{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    border-top:1px solid #f3ede8;
+    padding-top:8px;
+    margin-top:auto;
+  }
+  .exp-chip{
+    background:#f4efeb;
+    color:var(--body-c);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    font-weight:500;
+    padding:4px 9px;
+    border-radius:10px;
+  }
+
+  /* ================= FOOTER CTA ================= */
+  .footer-cta{
+    grid-column:span 4;
+    position:relative;
+    overflow:hidden;
+    border-radius:26px;
+    padding:18px 26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#fff;
+    background:
+      radial-gradient(60% 90% at 90% 0%, rgba(255,255,255,.25), transparent 60%),
+      linear-gradient(120deg,#ff6a2b,#e3411f 60%,#c2320f);
+    box-shadow:0 24px 60px rgba(255,106,43,.35);
+    border:1px solid rgba(255,255,255,.3);
+  }
+  .footer-cta:hover{transform:translateY(-3px);}
+  .cta-left{display:flex; align-items:center; gap:10px;}
+  .cta-dot{width:9px; height:9px; border-radius:999px; background:#4ade80; box-shadow:0 0 10px #4ade80;}
+  .cta-left span{font-weight:600; font-size:13px;}
+  .cta-center{font-size:12px; color:rgba(255,255,255,.75);}
+  .cta-btn{
+    background:var(--charcoal);
+    color:#fff;
+    font-weight:600;
+    font-size:12.5px;
+    padding:10px 22px;
+    border-radius:999px;
+    transition:all .22s ease;
+  }
+  .cta-btn:hover{filter:brightness(1.2); transform:translateY(-2px); box-shadow:0 10px 26px rgba(0,0,0,.3);}
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .hero{grid-column:span 2;}
+    .toolbelt{grid-column:span 2;}
+    .projects{grid-column:span 2; grid-template-columns:repeat(2,1fr);}
+    .experience{grid-column:span 2;}
+    .footer-cta{grid-column:span 2;}
+    .toolbelt-row{flex-wrap:wrap; justify-content:flex-start; gap:8px;}
+  }
+
+  @media (max-width:600px){
+    .grid{grid-template-columns:1fr;}
+    .hero{grid-column:span 1;}
+    .toolbelt{grid-column:span 1;}
+    .projects{grid-column:span 1; grid-template-columns:1fr;}
+    .experience{grid-column:span 1;}
+    .footer-cta{grid-column:span 1; flex-direction:column; align-items:flex-start; gap:12px;}
+    .cta-center{order:3;}
+    .exp-head{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="grid">
+
+    <!-- ============ HERO ============ -->
+    <div class="card hero">
+      <span class="hero-pill"><span class="hero-dot"></span> Open to opportunities</span>
+      <div class="hero-top">
+        <div class="hero-avatar">DP</div>
+        <div>
+          <div class="hero-name">Diep Pham</div>
+          <div class="hero-role">Senior Fullstack Engineer · React / Web3 / AI</div>
+        </div>
+      </div>
+      <div class="hero-bio">Seven years shipping web &amp; Web3 products — React/Next.js frontends, Python &amp; Golang services, EVM smart-contract integration, and lately AI-powered features built with production rigor.</div>
+      <div class="hero-tags">
+        <span class="hero-tag">Frontend ownership</span>
+        <span class="hero-tag">Rapid delivery</span>
+        <span class="hero-tag">AI-assisted workflows</span>
+      </div>
+    </div>
+
+    <!-- ============ CONTACT + EDUCATION ============ -->
+    <div class="card side-card">
+      <div class="mono">Contact</div>
+      <span>xiaoyhun@gmail.com</span>
+      <span>0839 082 127</span>
+      <span>District 10, Ho Chi Minh City</span>
+      <a class="link" href="https://github.com/XiaoYhun" target="_blank">github.com/XiaoYhun</a>
+      <div class="mono side-label">Education</div>
+      <span class="side-strong">B.Sc. Information Technology</span>
+      <span class="side-muted">HCMC University of Science · 2012–2016</span>
+    </div>
+
+    <!-- ============ NUMBERS ============ -->
+    <div class="card numbers">
+      <div class="mono">Numbers</div>
+      <div class="numbers-grid">
+        <div><div class="num-value">7+</div><div class="num-cap">years web dev</div></div>
+        <div><div class="num-value">5</div><div class="num-cap">years ReactJS</div></div>
+        <div><div class="num-value">3+</div><div class="num-cap">years Web3</div></div>
+        <div><div class="num-value">10+</div><div class="num-cap">apps shipped</div></div>
+      </div>
+      <div class="numbers-footer">Also: Photoshop · Scrum · mentoring</div>
+    </div>
+
+    <!-- ============ TOOLBELT ============ -->
+    <div class="card toolbelt">
+      <div class="mono">Toolbelt</div>
+      <div class="toolbelt-row">
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React"><span>React</span></div>
+        <div class="tool"><img src="https://cdn.simpleicons.org/nextdotjs/2b2724" alt="Next.js"><span>Next.js</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript"><span>TypeScript</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind"><span>Tailwind</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg" alt="Redux"><span>Redux</span></div>
+        <div class="tool"><img src="https://cdn.simpleicons.org/reactquery/FF4154" alt="TanStack"><span>TanStack</span></div>
+        <div class="tool"><img src="https://cdn.simpleicons.org/framer/0055FF" alt="Framer"><span>Framer</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg" alt="Three.js"><span>Three.js</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/solidity/solidity-original.svg" alt="Solidity"><span>Solidity</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Golang"><span>Golang</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"><span>Python</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js"><span>Node.js</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL"><span>PostgreSQL</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" alt="Redis"><span>Redis</span></div>
+        <div class="tool"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg" alt="Vite"><span>Vite</span></div>
+      </div>
+    </div>
+
+    <!-- ============ PROJECTS ============ -->
+    <div class="projects">
+      <div class="project">
+        <div class="project-head">
+          <div class="project-title">Fintech Stock Platform</div>
+          <span class="project-tag">Fintech</span>
+        </div>
+        <div class="project-desc">Web platform for Vietnam's stock market — real-time data, charting, portfolio tooling.</div>
+        <div class="project-foot">
+          <img src="https://cdn.simpleicons.org/nextdotjs/2b2724" alt="Next.js" title="Next.js">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" title="TypeScript">
+          <img src="https://cdn.simpleicons.org/reactquery/FF4154" alt="TanStack Query" title="TanStack Query">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind" title="Tailwind">
+          <a class="project-link" href="https://xno.vn/" target="_blank">xno.vn ↗</a>
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-head">
+          <div class="project-title">KyberSwap Landing Page</div>
+          <span class="project-tag">Web3</span>
+        </div>
+        <div class="project-desc">Animated marketing site for KyberSwap, built and deployed end-to-end.</div>
+        <div class="project-foot">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" title="React">
+          <img src="https://cdn.simpleicons.org/framer/0055FF" alt="Framer" title="Framer">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg" alt="Three.js" title="Three.js">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg" alt="Vite" title="Vite">
+          <a class="project-link" href="https://kyberswap-landingpage.vercel.app/" target="_blank">kyberswap-landingpage.vercel.app ↗</a>
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-head">
+          <div class="project-title">E-commerce Website</div>
+          <span class="project-tag">Retail</span>
+        </div>
+        <div class="project-desc">Full storefront built with Next.js and Tailwind CSS.</div>
+        <div class="project-foot">
+          <img src="https://cdn.simpleicons.org/nextdotjs/2b2724" alt="Next.js" title="Next.js">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind" title="Tailwind">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" title="React">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg" alt="Vite" title="Vite">
+          <a class="project-link" href="https://ymart-delta.vercel.app/" target="_blank">ymart-delta.vercel.app ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ EXPERIENCE ============ -->
+    <div class="card experience">
+      <div class="exp-head">
+        <div class="exp-company">IP World <span class="exp-role">· Senior Fullstack Engineer</span></div>
+        <div class="exp-period">01/2025 — present</div>
+      </div>
+      <div class="exp-blurb">SocialFi &amp; memecoin launch platform on Story Protocol.</div>
+      <ul class="exp-list">
+        <li>Built React/Next.js frontend for token launch flows</li>
+        <li>Integrated wallets and EVM smart contracts</li>
+        <li>Golang backend services for platform APIs</li>
+      </ul>
+      <div class="exp-chips">
+        <span class="exp-chip">React</span>
+        <span class="exp-chip">Next.js</span>
+        <span class="exp-chip">Golang</span>
+        <span class="exp-chip">Solidity</span>
+      </div>
+    </div>
+
+    <div class="card experience">
+      <div class="exp-head">
+        <div class="exp-company">UNIBOT <span class="exp-role">· Senior Frontend Engineer</span></div>
+        <div class="exp-period">02/2024 — 12/2024</div>
+      </div>
+      <div class="exp-blurb">Web3 trading products: revshare, perps, swap.</div>
+      <ul class="exp-list">
+        <li>Owned frontend across four trading apps</li>
+        <li>Built trading interfaces with ethers.js</li>
+        <li>Shipped fast with Tailwind CSS component system</li>
+      </ul>
+      <div class="exp-chips">
+        <span class="exp-chip">React</span>
+        <span class="exp-chip">Tailwind</span>
+        <span class="exp-chip">Solidity</span>
+        <span class="exp-chip">Vite</span>
+      </div>
+    </div>
+
+    <div class="card experience">
+      <div class="exp-head">
+        <div class="exp-company">Kyber Network <span class="exp-role">· Frontend Engineer</span></div>
+        <div class="exp-period">08/2021 — 01/2024</div>
+      </div>
+      <div class="exp-blurb">Leading DEX aggregator on KyberSwap.</div>
+      <ul class="exp-list">
+        <li>TradingView charts and KyberDAO voting flows</li>
+        <li>Built KyberAI insights dashboard</li>
+        <li>Led Vite migration and performance work</li>
+      </ul>
+      <div class="exp-chips">
+        <span class="exp-chip">React</span>
+        <span class="exp-chip">TypeScript</span>
+        <span class="exp-chip">Vite</span>
+        <span class="exp-chip">Solidity</span>
+      </div>
+    </div>
+
+    <div class="card experience">
+      <div class="exp-head">
+        <div class="exp-company">2Clicks Solution <span class="exp-role">· Fullstack Engineer</span></div>
+        <div class="exp-period">04/2016 — 05/2019</div>
+      </div>
+      <div class="exp-blurb">eCommerce and internal tools, full-stack.</div>
+      <ul class="exp-list">
+        <li>Automotive eCommerce from scratch in React</li>
+        <li>Ticket-managing and form-builder products in .NET</li>
+        <li>Scrum master duty for the team</li>
+      </ul>
+      <div class="exp-chips">
+        <span class="exp-chip">.NET</span>
+        <span class="exp-chip">React</span>
+        <span class="exp-chip">Next.js</span>
+      </div>
+    </div>
+
+    <!-- ============ FOOTER CTA ============ -->
+    <div class="footer-cta">
+      <div class="cta-left">
+        <span class="cta-dot"></span>
+        <span>Open to senior frontend / fullstack roles</span>
+      </div>
+      <div class="cta-center">Coding · Travelling · Movies</div>
+      <a class="cta-btn" href="mailto:xiaoyhun@gmail.com">Get in touch</a>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

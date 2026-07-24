@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diep Pham — Fullstack Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --page:#04060a;
+    --frame:#0a0f17;
+    --frame-raise:#111826;
+    --line:rgba(160,200,240,0.09);
+    --line-strong:rgba(160,200,240,0.2);
+    --text:#e9eff6;
+    --muted:#94a3b8;
+    --dim:#5f6b7d;
+    --accent:#4fd8f7;
+    --accent-soft:rgba(79,216,247,0.13);
+    --blue:#1f6fe0;
+    --ice:#eef7fc;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter',sans-serif;
+    background:#030509;
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- BACKMOST GRAINY BACKGROUND (page gutters) ---------- */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.17'/%3E%3C/svg%3E"),
+      radial-gradient(900px 620px at 12% 8%, rgba(31,111,224,0.12), transparent 62%),
+      radial-gradient(760px 540px at 88% 34%, rgba(79,216,247,0.07), transparent 60%),
+      radial-gradient(880px 640px at 50% 96%, rgba(20,58,102,0.16), transparent 65%),
+      radial-gradient(140% 100% at 50% 50%, transparent 55%, rgba(0,0,0,0.5) 100%);
+  }
+
+  /* ---------- SAND / NOISE OVERLAY ---------- */
+  body::after{
+    content:"";
+    position:fixed;
+    top:-100%; left:-100%;
+    width:300%; height:300%;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:0.055;
+    pointer-events:none;
+    z-index:999;
+    animation:grain 9s steps(10) infinite;
+  }
+  @keyframes grain{
+    0%,100%{transform:translate(0,0);}
+    10%{transform:translate(-5%,-8%);}
+    20%{transform:translate(-13%,3%);}
+    30%{transform:translate(7%,-18%);}
+    40%{transform:translate(-5%,20%);}
+    50%{transform:translate(-12%,8%);}
+    60%{transform:translate(16%,0%);}
+    70%{transform:translate(0%,12%);}
+    80%{transform:translate(3%,28%);}
+    90%{transform:translate(-9%,10%);}
+  }
+
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif; letter-spacing:-0.02em;}
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--accent); color:#04121a;}
+
+  .mono{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- WORD-BY-WORD REVEAL ---------- */
+  .word{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(0.65em);
+    filter:blur(5px);
+    transition:opacity .55s ease, transform .55s cubic-bezier(.2,.7,.2,1), filter .55s ease;
+    transition-delay:var(--d, 0s);
+  }
+  .words-in .word{opacity:1; transform:none; filter:none;}
+
+  /* ---------- THE FRAME ---------- */
+  .frame{
+    position:relative;
+    z-index:1;
+    max-width:1080px;
+    margin:0 auto;
+    background:var(--frame);
+    border-left:1px solid var(--line);
+    border-right:1px solid var(--line);
+    min-height:100vh;
+  }
+
+  section{border-top:1px solid var(--line);}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    gap:26px;
+    padding:14px 28px;
+    background:rgba(7,11,17,0.82);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+  }
+
+  .logo-mark{
+    width:22px;
+    height:22px;
+    border-radius:6px;
+    background:conic-gradient(from 200deg, var(--accent), var(--blue), #123a66, var(--accent));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+    color:#041019;
+  }
+
+  .nav-links{display:flex; gap:4px; align-items:center;}
+
+  .nav a.link{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--muted);
+    padding:7px 11px;
+    border-radius:8px;
+    transition:all .2s ease;
+  }
+
+  .nav a.link svg{width:14px; height:14px;}
+  .nav a.link:hover{color:var(--text); background:var(--frame-raise);}
+
+  .nav-right{margin-left:auto; display:flex; gap:8px; align-items:center;}
+
+  .nav .btn-hire{
+    font-size:13px;
+    font-weight:600;
+    padding:8px 16px;
+    border-radius:8px;
+    background:var(--ice);
+    color:#07131c;
+    transition:all .2s ease;
+  }
+  .nav .btn-hire:hover{background:var(--accent); transform:translateY(-1px);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    border-top:none;
+  }
+
+  .hero-copy{
+    padding:88px 48px 88px 60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  .availability{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    align-self:flex-start;
+    padding:5px 12px 5px 9px;
+    border-radius:999px;
+    border:1px solid var(--line-strong);
+    color:var(--muted);
+    margin-bottom:30px;
+  }
+
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:#7ed88a;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(126,216,138,0.5);}
+    70%{box-shadow:0 0 0 7px rgba(126,216,138,0);}
+    100%{box-shadow:0 0 0 0 rgba(126,216,138,0);}
+  }
+
+  .hero h1{
+    font-size:54px;
+    line-height:1.06;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  .hero h1 .thin{font-weight:500; color:var(--muted);}
+  .hero h1 .accent{color:var(--accent);}
+
+  .hero .with{
+    font-size:16px;
+    color:var(--muted);
+    margin-bottom:34px;
+  }
+  .hero .with strong{color:var(--text); font-weight:600;}
+
+  .hero-actions{display:flex; gap:12px;}
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 22px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    transition:all .22s ease;
+    border:1px solid transparent;
+  }
+  .btn-primary{background:var(--ice); color:#07131c;}
+  .btn-primary:hover{background:var(--accent); transform:translateY(-2px); box-shadow:0 8px 28px rgba(79,216,247,0.25);}
+  .btn-ghost{border-color:var(--line-strong); color:var(--text);}
+  .btn-ghost:hover{background:var(--frame-raise); transform:translateY(-2px);}
+
+  /* hero art — cool colour bars like the aihero portrait backdrop */
+  .hero-art{
+    position:relative;
+    border-left:1px solid var(--line);
+    overflow:hidden;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    min-height:460px;
+    background:#0b1220;
+  }
+
+  .bars{
+    position:absolute;
+    inset:0;
+    display:flex;
+  }
+  .bars span{flex:1; opacity:.92; transform-origin:bottom; animation:barIn 1.1s cubic-bezier(.2,.7,.2,1) both;}
+  .bars span:nth-child(1){background:#1f6fe0; animation-delay:.05s;}
+  .bars span:nth-child(2){background:#4fd8f7; animation-delay:.12s;}
+  .bars span:nth-child(3){background:#0a1626; animation-delay:.2s;}
+  .bars span:nth-child(4){background:#eef7fc; animation-delay:.28s;}
+  .bars span:nth-child(5){background:#2aa9d8; animation-delay:.36s;}
+  .bars span:nth-child(6){background:#143a66; animation-delay:.44s;}
+  .bars span:nth-child(7){background:#8fe7fb; animation-delay:.52s;}
+  .bars span:nth-child(8){background:#0d1b2e; animation-delay:.6s;}
+  @keyframes barIn{from{transform:scaleY(0);} to{transform:scaleY(1);}}
+
+  .bars::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(120% 90% at 50% 110%, rgba(4,6,10,0.88) 30%, transparent 68%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E");
+  }
+
+  .hero-monogram{
+    position:relative;
+    z-index:1;
+    margin-bottom:52px;
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #1a2740, #0c1420 70%);
+    border:1px solid var(--line-strong);
+    box-shadow:0 24px 60px rgba(0,0,0,0.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:46px;
+    color:var(--accent);
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+  }
+
+  /* ---------- SPLIT MANIFESTO ---------- */
+  .split{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+  }
+
+  .split-left{
+    padding:72px 48px 72px 60px;
+  }
+  .split-left h2{
+    position:sticky;
+    top:96px;
+    font-size:30px;
+    line-height:1.25;
+    font-weight:600;
+  }
+  .split-left h2 em{font-style:normal; color:var(--accent);}
+
+  .split-right{
+    border-left:1px solid var(--line);
+    padding:72px 60px 72px 48px;
+    color:var(--muted);
+    font-size:15px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .split-right strong{color:var(--text); font-weight:600;}
+
+  .stat-strip{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);
+  }
+  .stat{
+    padding:26px 20px;
+    text-align:center;
+  }
+  .stat + .stat{border-left:1px solid var(--line);}
+  .stat .num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:30px;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .stat .label{font-size:12.5px; color:var(--dim); margin-top:2px;}
+
+  /* ---------- CENTERED SECTION HEADINGS ---------- */
+  .center-head{
+    text-align:center;
+    padding:84px 40px 60px;
+  }
+  .center-head h2{
+    font-size:34px;
+    line-height:1.3;
+    font-weight:700;
+  }
+  .center-head h2 .accent{color:var(--accent);}
+  .center-head p{color:var(--muted); font-size:15px; margin-top:10px;}
+
+  /* ---------- LIST ROWS (aihero signature) ---------- */
+  .rows{display:flex; flex-direction:column;}
+
+  .row{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    padding:30px 44px;
+    border-top:1px solid var(--line);
+    transition:background .2s ease;
+    position:relative;
+  }
+  .row:hover{background:var(--frame-raise);}
+
+  .row-thumb{
+    width:148px;
+    height:86px;
+    border-radius:8px;
+    flex-shrink:0;
+    border:1px solid var(--line-strong);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:24px;
+    color:rgba(4,16,25,0.85);
+    overflow:hidden;
+    position:relative;
+    transition:transform .3s ease;
+  }
+  .row:hover .row-thumb{transform:scale(1.04) rotate(-1deg);}
+  .row-thumb::after{
+    content:"";
+    position:absolute; inset:0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+  }
+  .t-ip{background:linear-gradient(130deg,#4fd8f7,#1f6fe0 75%);}
+  .t-ub{background:linear-gradient(130deg,#eef7fc,#8fe7fb 70%);}
+  .t-kb{background:linear-gradient(130deg,#2aa9d8,#143a66 75%); color:var(--ice);}
+  .t-2c{background:linear-gradient(130deg,#22344f,#0d1b2e 80%); color:var(--ice);}
+  .t-xno{background:linear-gradient(130deg,#1f6fe0,#12305e 80%); color:var(--ice);}
+  .t-ks{background:linear-gradient(130deg,#8fe7fb,#2aa9d8 75%);}
+  .t-ym{background:linear-gradient(130deg,#eef7fc,#4fd8f7 80%);}
+
+  .row-body{flex:1; min-width:0;}
+
+  .badge{
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:999px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    margin-bottom:8px;
+  }
+
+  .row-body h3{font-size:20px; font-weight:600; margin-bottom:5px;}
+  .row-body .sub{font-size:14px; color:var(--muted); max-width:520px;}
+  .row-body .meta{font-size:12.5px; color:var(--dim); margin-top:7px;}
+  .row-body .meta b{color:var(--muted); font-weight:500;}
+
+  .row-go{
+    width:44px; height:44px;
+    border-radius:50%;
+    border:1px solid var(--line-strong);
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--muted);
+    transition:all .25s ease;
+  }
+  .row-go svg{width:17px; height:17px;}
+  .row:hover .row-go{
+    background:var(--ice);
+    border-color:var(--ice);
+    color:#07131c;
+    transform:translateX(3px);
+  }
+
+  /* ---------- STACK ROWS ---------- */
+  .stack-row{
+    display:grid;
+    grid-template-columns:190px 1fr;
+    gap:26px;
+    padding:26px 44px;
+    border-top:1px solid var(--line);
+    align-items:start;
+  }
+  .stack-row .cat{
+    color:var(--accent);
+    padding-top:7px;
+  }
+  .pills{display:flex; flex-wrap:wrap; gap:8px;}
+  .pill{
+    padding:6px 13px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--page);
+    font-size:13px;
+    color:var(--muted);
+    transition:all .2s ease;
+  }
+  .pill:hover{color:var(--accent); border-color:var(--line-strong); transform:translateY(-2px);}
+
+  /* staggered pill entrance (delays set by JS) */
+  .reveal .pill{
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .45s ease, transform .45s ease;
+  }
+  .reveal.in .pill{opacity:1; transform:none;}
+  .reveal.in .pill:hover{transform:translateY(-2px);}
+
+  /* ---------- BLUE STRIP ---------- */
+  .strip{
+    height:6px;
+    background:linear-gradient(90deg,
+      #1f6fe0 0 12%, #4fd8f7 12% 26%, #eef7fc 26% 34%, #143a66 34% 48%,
+      #8fe7fb 48% 62%, #2aa9d8 62% 74%, #1f6fe0 74% 86%, #4fd8f7 86% 100%);
+  }
+
+  /* ---------- NOW ---------- */
+  .now{
+    text-align:center;
+    padding:72px 40px;
+  }
+  .now .badge{margin-bottom:18px;}
+  .now h2{font-size:28px; font-weight:600; max-width:640px; margin:0 auto 12px;}
+  .now p{color:var(--muted); font-size:15px; max-width:560px; margin:0 auto;}
+  .now p strong{color:var(--text); font-weight:600;}
+
+  /* ---------- ABOUT ---------- */
+  .about{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+  }
+  .about-art{
+    position:relative;
+    overflow:hidden;
+    min-height:380px;
+    background:#0b1220;
+  }
+  .about-art .bars span{animation:none; transform:scaleY(1);}
+  .about-copy{
+    border-left:1px solid var(--line);
+    padding:64px 60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:16px;
+  }
+  .about-copy h2{font-size:30px; font-weight:700;}
+  .about-copy p{color:var(--muted); font-size:15px;}
+  .about-copy p strong{color:var(--text); font-weight:600;}
+
+  /* ---------- CONTACT ---------- */
+  .contact{
+    text-align:center;
+    padding:88px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  .contact::before{
+    content:"";
+    position:absolute;
+    top:-40%; left:50%;
+    transform:translateX(-50%);
+    width:600px; height:400px;
+    background:radial-gradient(circle, rgba(79,216,247,0.13), transparent 65%);
+    pointer-events:none;
+    animation:breathe 5s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{opacity:.7;}
+    50%{opacity:1;}
+  }
+  .contact h2{font-size:36px; font-weight:700; margin-bottom:12px; position:relative;}
+  .contact p{color:var(--muted); max-width:460px; margin:0 auto 30px; position:relative;}
+  .contact-actions{display:flex; gap:12px; justify-content:center; position:relative;}
+  .contact .privacy{
+    margin-top:26px;
+    font-size:12.5px;
+    color:var(--dim);
+    position:relative;
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 44px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:var(--dim);
+    font-size:13px;
+  }
+  footer .socials{display:flex; gap:16px;}
+  footer .socials a{color:var(--dim); transition:color .2s;}
+  footer .socials a:hover{color:var(--accent);}
+
+  /* ---------- REVEAL ---------- */
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:960px){
+    .hero{grid-template-columns:1fr;}
+    .hero-art{min-height:320px; border-left:none; border-top:1px solid var(--line);}
+    .hero-copy{padding:64px 28px;}
+    .hero h1{font-size:40px;}
+    .split{grid-template-columns:1fr;}
+    .split-left{padding:56px 28px 8px;}
+    .split-left h2{position:static;}
+    .split-right{border-left:none; padding:32px 28px 56px;}
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(3){border-left:none;}
+    .stat:nth-child(n+3){border-top:1px solid var(--line);}
+    .row{flex-wrap:wrap; padding:26px 28px;}
+    .row-thumb{width:100%; height:120px;}
+    .stack-row{grid-template-columns:1fr; gap:12px; padding:22px 28px;}
+    .about{grid-template-columns:1fr;}
+    .about-copy{border-left:none; border-top:1px solid var(--line); padding:48px 28px;}
+    .nav-links{display:none;}
+    footer{flex-direction:column; gap:12px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    body::after{animation:none;}
+    .word{transition:none; opacity:1; transform:none; filter:none;}
+    .reveal{transition:none; opacity:1; transform:none;}
+    .hero-monogram{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav">
+    <a class="logo" href="#top">
+      <span class="logo-mark">DP</span>
+      Diep&nbsp;Pham
+    </a>
+    <div class="nav-links">
+      <a class="link" href="#stack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Stack
+      </a>
+      <a class="link" href="#experience">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Experience
+      </a>
+      <a class="link" href="#projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h7l2 3h7v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
+        Projects
+      </a>
+      <a class="link" href="#now">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Now
+      </a>
+    </div>
+    <div class="nav-right">
+      <a class="link" style="color:var(--muted); font-size:13.5px;" href="https://github.com/XiaoYhun" target="_blank">GitHub</a>
+      <a class="btn-hire" href="#contact">Hire Me</a>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <div class="availability mono"><span class="dot"></span> Open to opportunities</div>
+      <h1 data-words data-words-load>Building <span class="accent">real</span> web &amp; Web3 products<span class="thin"> that ship.</span></h1>
+      <p class="with" data-words data-words-load>with <strong>Diep Pham</strong> — Fullstack Engineer, Ho Chi Minh City</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">View the work</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="hero-monogram">DP</div>
+    </div>
+  </section>
+
+  <!-- ============ MANIFESTO SPLIT ============ -->
+  <section class="split reveal">
+    <div class="split-left">
+      <h2 data-words>Engineering fundamentals are still the <em>biggest advantage.</em></h2>
+    </div>
+    <div class="split-right">
+      <p>Seven years of shipping products taught me one thing: frameworks change, fundamentals compound. Fast interfaces, clean data flows, and code the next engineer can read — that's what survives.</p>
+      <p>I specialize in <strong>React / Next.js frontends</strong> backed by <strong>Python and Golang services</strong>, with three years deep in <strong>EVM smart-contract integration</strong> — wallets, on-chain flows, trading interfaces.</p>
+      <p>Lately I've been shipping <strong>AI-powered features</strong> — RAG pipelines, embeddings, LLM integration — treating them with the same rigor as any other production system.</p>
+    </div>
+  </section>
+
+  <div class="stat-strip reveal">
+    <div class="stat"><div class="num">7+</div><div class="label">Years experience</div></div>
+    <div class="stat"><div class="num">3+</div><div class="label">Years Web3</div></div>
+    <div class="stat"><div class="num">4</div><div class="label">Companies</div></div>
+    <div class="stat"><div class="num">10+</div><div class="label">Products shipped</div></div>
+  </div>
+
+  <!-- ============ TECH STACK ============ -->
+  <section id="stack">
+    <div class="center-head reveal">
+      <h2 data-words>A toolkit built for<br><span class="accent">the whole stack</span></h2>
+      <p>The technologies I reach for when it's time to ship.</p>
+    </div>
+
+    <div class="stack-row reveal">
+      <div class="cat mono">Frontend</div>
+      <div class="pills">
+        <span class="pill">React</span><span class="pill">Next.js</span><span class="pill">TypeScript</span><span class="pill">Tailwind CSS</span><span class="pill">TanStack Query</span><span class="pill">Zustand</span><span class="pill">Redux</span><span class="pill">Framer Motion</span><span class="pill">Three.js</span>
+      </div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="cat mono">Backend</div>
+      <div class="pills">
+        <span class="pill">Python (FastAPI)</span><span class="pill">Golang</span><span class="pill">Node.js</span><span class="pill">PostgreSQL</span><span class="pill">Redis</span><span class="pill">REST APIs</span>
+      </div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="cat mono">Web3</div>
+      <div class="pills">
+        <span class="pill">ethers.js</span><span class="pill">wagmi</span><span class="pill">EVM Smart Contracts</span><span class="pill">Wallet Connectivity</span><span class="pill">On-chain Flows</span>
+      </div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="cat mono">AI</div>
+      <div class="pills">
+        <span class="pill">RAG</span><span class="pill">Vector Databases</span><span class="pill">Embeddings</span><span class="pill">Prompt Engineering</span><span class="pill">LLM Integration</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section id="experience">
+    <div class="center-head reveal">
+      <h2 data-words>Where I've <span class="accent">shipped</span></h2>
+      <p>Four companies, from eCommerce to DeFi.</p>
+    </div>
+
+    <div class="rows">
+      <a class="row reveal" href="#experience">
+        <div class="row-thumb t-ip">IP</div>
+        <div class="row-body">
+          <span class="badge mono">Current</span>
+          <h3>IP World — Senior Fullstack Engineer</h3>
+          <p class="sub">SocialFi &amp; memecoin launch platform on Story Protocol. React/Next.js frontend, wallet + smart-contract integration, Golang backend services.</p>
+          <p class="meta"><b>Jan 2025 — Present</b></p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+
+      <a class="row reveal" href="#experience">
+        <div class="row-thumb t-ub">UB</div>
+        <div class="row-body">
+          <h3>UNIBOT — Senior Frontend Engineer</h3>
+          <p class="sub">Owned the frontend across revshare, perps, swap and main apps. Web3 trading interfaces with React, Tailwind CSS and ethers.js.</p>
+          <p class="meta"><b>Feb 2024 — Dec 2024</b></p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+
+      <a class="row reveal" href="#experience">
+        <div class="row-thumb t-kb">KN</div>
+        <div class="row-body">
+          <h3>Kyber Network — Frontend Engineer</h3>
+          <p class="sub">TradingView charts and KyberDAO flows on KyberSwap. Built the KyberAI insights dashboard, led the Vite migration and performance work.</p>
+          <p class="meta"><b>Aug 2021 — Jan 2024</b></p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+
+      <a class="row reveal" href="#experience">
+        <div class="row-thumb t-2c">2C</div>
+        <div class="row-body">
+          <h3>2 Clicks Solution — Fullstack Engineer</h3>
+          <p class="sub">Automotive eCommerce from scratch in React, ticket-managing and form-builder products with .NET — plus Scrum master duty.</p>
+          <p class="meta"><b>Apr 2016 — May 2019</b></p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects">
+    <div class="center-head reveal">
+      <h2 data-words>Want to see it live?<br><span class="accent">Explore the showcases</span></h2>
+    </div>
+
+    <div class="rows">
+      <a class="row reveal" href="https://xno.vn/" target="_blank">
+        <div class="row-thumb t-xno">XNO</div>
+        <div class="row-body">
+          <span class="badge mono">Live</span>
+          <h3>XNO.vn</h3>
+          <p class="sub">Fintech stock platform for Vietnam's market — real-time data, charting, and trading workflows.</p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+
+      <a class="row reveal" href="https://kyberswap-landingpage.vercel.app/" target="_blank">
+        <div class="row-thumb t-ks">KS</div>
+        <div class="row-body">
+          <span class="badge mono">Live</span>
+          <h3>KyberSwap Landing Page</h3>
+          <p class="sub">Public marketing site for KyberSwap — performance-tuned, responsive, and animation-rich.</p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+
+      <a class="row reveal" href="https://ymart-delta.vercel.app/" target="_blank">
+        <div class="row-thumb t-ym">YM</div>
+        <div class="row-body">
+          <span class="badge mono">Live</span>
+          <h3>YMart</h3>
+          <p class="sub">E-commerce storefront built with Next.js and Tailwind CSS, focused on clean UX and speed.</p>
+        </div>
+        <div class="row-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ NOW ============ -->
+  <section class="now reveal" id="now">
+    <span class="badge mono">Now — Currently building</span>
+    <h2 data-words>A SocialFi launch platform on Story Protocol</h2>
+    <p>At <strong>IP World</strong>, wiring React frontends to on-chain launch flows — and on the side, rebuilding this portfolio with <strong>Next.js</strong> and an AI-assisted workflow.</p>
+  </section>
+
+  <div class="strip"></div>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="about">
+    <div class="about-art">
+      <div class="bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="hero-monogram" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); z-index:1; animation:none;">DP</div>
+    </div>
+    <div class="about-copy reveal">
+      <h2 data-words>Hi, I'm Diep Pham</h2>
+      <p>Before Web3, I spent three years building eCommerce and internal tools full-stack — React on the front, .NET behind it.</p>
+      <p>Then three years at <strong>Kyber Network</strong> put me deep into DeFi: DAO voting flows, trading charts, an AI insights dashboard used by thousands of traders.</p>
+      <p>Now I build across the whole stack — <strong>React, Python, Golang, and smart contracts</strong> — and I care most about the craft: products that feel fast and code that reads clean.</p>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="contact" id="contact">
+    <h2 data-words>Let's build something together</h2>
+    <p>Open to fullstack, frontend, and Web3 engineering roles. Reach out — I reply quickly.</p>
+    <div class="contact-actions">
+      <a class="btn btn-primary" href="mailto:xiaoyhun@gmail.com">xiaoyhun@gmail.com</a>
+      <a class="btn btn-ghost" href="https://github.com/XiaoYhun" target="_blank">GitHub Profile</a>
+    </div>
+    <p class="privacy">Based in Ho Chi Minh City, Vietnam · +84 839 082 127</p>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Diep Pham</span>
+    <div class="socials">
+      <a href="https://github.com/XiaoYhun" target="_blank">GitHub</a>
+      <a href="mailto:xiaoyhun@gmail.com">Email</a>
+      <a href="tel:0839082127">Phone</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    /* ---- word-by-word: wrap every word in a delayed span, preserving inline markup ---- */
+    function splitWords(el){
+      var counter = {i: 0};
+      wrap(el, counter);
+    }
+    function wrap(node, counter){
+      var children = Array.prototype.slice.call(node.childNodes);
+      children.forEach(function(child){
+        if(child.nodeType === 3){
+          var parts = child.textContent.split(/(\s+)/);
+          var frag = document.createDocumentFragment();
+          parts.forEach(function(part){
+            if(part.trim() === ''){
+              frag.appendChild(document.createTextNode(part));
+            } else {
+              var span = document.createElement('span');
+              span.className = 'word';
+              span.style.setProperty('--d', (counter.i * 0.07) + 's');
+              span.textContent = part;
+              counter.i++;
+              frag.appendChild(span);
+            }
+          });
+          node.replaceChild(frag, child);
+        } else if(child.nodeType === 1 && child.tagName !== 'BR'){
+          wrap(child, counter);
+        }
+      });
+    }
+
+    document.querySelectorAll('[data-words]').forEach(splitWords);
+
+    /* hero words play on load */
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        document.querySelectorAll('[data-words-load]').forEach(function(el){
+          el.classList.add('words-in');
+        });
+      });
+    });
+
+    /* ---- staggered pills ---- */
+    document.querySelectorAll('.pills').forEach(function(group){
+      Array.prototype.forEach.call(group.querySelectorAll('.pill'), function(pill, i){
+        pill.style.transitionDelay = (i * 0.04) + 's';
+      });
+    });
+
+    /* ---- reveal on scroll (also triggers word animations inside) ---- */
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          e.target.querySelectorAll('[data-words]').forEach(function(el){
+            el.classList.add('words-in');
+          });
+          if(e.target.hasAttribute('data-words')) e.target.classList.add('words-in');
+          /* clear stagger delays once pills have entered, so hover stays snappy */
+          var pills = e.target.querySelectorAll('.pill');
+          if(pills.length){
+            setTimeout(function(){
+              Array.prototype.forEach.call(pills, function(p){ p.style.transitionDelay = ''; });
+            }, 900);
+          }
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.12});
+
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    /* word-headings that sit outside a .reveal (split-left, contact) */
+    document.querySelectorAll('[data-words]:not([data-words-load])').forEach(function(el){
+      if(!el.closest('.reveal')) io.observe(el);
+    });
+  })();
+</script>
+
+</body>
+</html>

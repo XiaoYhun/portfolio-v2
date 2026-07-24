@@ -1,3 +1,5 @@
 {"type":"skill","name":"brainstorming","digest":"{\"skill\":\"superpowers:brainstorming\",\"args\":\"Web UI for managing multiple terminals that can start C","timestamp":"2026-07-04T17:56:10Z"}
 {"type":"skill","name":"writing-plans","digest":"{\"skill\":\"superpowers:writing-plans\",\"args\":\"Implementation plan for Terminal Hub MVP per spec at G:","timestamp":"2026-07-04T18:13:44Z"}
 {"type":"skill","name":"subagent-driven-development","digest":"{\"skill\":\"superpowers:subagent-driven-development\",\"args\":\"Execute plan at G:\\\\Develop\\\\terminal-hub","timestamp":"2026-07-04T18:18:18Z"}
+{"type":"skill","name":"claude-in-chrome","digest":"{\"skill\":\"claude-in-chrome\"}","timestamp":"2026-07-12T03:05:58Z"}
+{"type":"skill","name":"run","digest":"{\"skill\":\"run\"}","timestamp":"2026-07-24T02:44:18Z"}

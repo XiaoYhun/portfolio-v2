@@ -2,5 +2,3 @@
 {"id":"event-000007","type":"session.stop","ts":"2026-07-04T17:57:37Z","state":"stopped"}
 {"id":"event-000001","type":"session.stop","ts":"2026-07-12T03:04:58Z","state":"stopped"}
 {"id":"event-000001","type":"session.stop","ts":"2026-07-23T05:47:42Z","state":"stopped"}
-{"id":"event-000001","type":"session.stop","ts":"2026-07-24T02:25:52Z","state":"stopped"}
-{"id":"event-000001","type":"session.stop","ts":"2026-07-24T02:27:28Z","state":"stopped"}

@@ -2,8 +2,10 @@
   "used": [
     "superpowers:brainstorming",
     "superpowers:writing-plans",
-    "superpowers:subagent-driven-development"
+    "superpowers:subagent-driven-development",
+    "claude-in-chrome",
+    "run"
   ],
   "session_start": "2026-07-04T17:56:10Z",
-  "last_used": "2026-07-04T18:18:18Z"
+  "last_used": "2026-07-24T02:44:18Z"
 }

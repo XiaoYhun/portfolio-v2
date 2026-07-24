@@ -2,8 +2,8 @@
   "changes_this_session": [],
   "cwd": "G:\\Develop\\portfolio",
   "duration_minutes": 0,
-  "ended_at": "2026-07-24T02:27:28Z",
-  "event_seq": 99,
+  "ended_at": "2026-07-23T05:47:42Z",
+  "event_seq": 0,
   "fork_count": 0,
   "git": {
     "branch": "master",
@@ -12,12 +12,10 @@
   },
   "harness_mem": {
     "healthy": true,
-    "last_checked": "2026-07-24T02:27:20Z",
+    "last_checked": "2026-07-23T05:47:35Z",
     "last_error": ""
   },
-  "last_event_id": "event-000099",
-  "last_message_hash": "ed3b1b38e7d1c4d8",
-  "last_message_length": 1588,
+  "last_event_id": "",
   "memory_logged": true,
   "orchestration": {
     "max_state_retries": 3,
@@ -34,10 +32,10 @@
   },
   "project_name": "portfolio",
   "prompt_seq": 0,
-  "resume_token": "resume-1784860040870473600",
-  "session_id": "session-1784860040870473600",
-  "started_at": "2026-07-24T02:27:20Z",
+  "resume_token": "resume-1784785655443553300",
+  "session_id": "session-1784785655443553300",
+  "started_at": "2026-07-23T05:47:35Z",
   "state": "stopped",
   "state_version": 1,
-  "updated_at": "2026-07-24T08:38:42Z"
+  "updated_at": "2026-07-23T05:47:35Z"
 }

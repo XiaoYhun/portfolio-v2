@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insurance App — GSAP Motion Study</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: radial-gradient(1200px 700px at 70% -10%, #23242b, #101014 60%);
+    color:#e8e8ea; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  [hidden] { display:none !important; }
+
+  /* ---------- page chrome ---------- */
+  .demo-bar {
+    position:fixed; top:18px; left:22px; z-index:50;
+    display:flex; align-items:center; gap:12px;
+  }
+  .demo-bar button {
+    font:600 13px/1 inherit; color:#101014; background:#f0efec;
+    border:0; border-radius:999px; padding:10px 18px; cursor:pointer;
+  }
+  .demo-bar .hint { font-size:12px; color:#7d7d85; }
+  .caption {
+    position:fixed; bottom:16px; left:0; right:0; text-align:center;
+    font-size:12px; color:#5b5b63; letter-spacing:.02em;
+  }
+
+  /* ---------- phone ---------- */
+  .phone-wrap { display:flex; align-items:center; justify-content:center; }
+  .phone {
+    width:418px; height:872px; border-radius:62px;
+    background:#0c0c0e; padding:14px; position:relative;
+    box-shadow: 0 40px 90px rgba(0,0,0,.55), 0 4px 18px rgba(0,0,0,.4),
+                inset 0 0 0 2px #3a3a40;
+    transform-origin: center center;
+  }
+  .screen {
+    width:390px; height:844px; border-radius:48px; overflow:hidden;
+    position:relative; background:#f2efe9;
+  }
+  .notch {
+    position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:118px; height:34px; border-radius:20px; background:#0c0c0e; z-index:40;
+  }
+  .view { position:absolute; inset:0; }
+
+  /* ---------- home ---------- */
+  .hero { position:absolute; inset:0 0 44% 0; overflow:hidden;
+    background:linear-gradient(180deg,#d8cfd2 0%,#e8ddd2 55%,#f2efe9 100%); }
+  .hero::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:180px;
+    background:linear-gradient(180deg, transparent, #f2efe9 82%); }
+  .blob { position:absolute; border-radius:50%; filter:blur(46px); will-change:transform; }
+  .b1 { width:420px; height:420px; right:-120px; top:-110px;
+        background:radial-gradient(circle at 35% 35%, #ff9b57, #f4593a 70%, transparent 72%); }
+  .b2 { width:300px; height:300px; left:-90px; top:60px; opacity:.85;
+        background:radial-gradient(circle at 60% 40%, #b9aecb, #9d93b8 65%, transparent 70%); }
+  .b3 { width:240px; height:240px; left:120px; top:-90px; opacity:.9;
+        background:radial-gradient(circle, #ffc08a, transparent 70%); }
+
+  .home-content { position:absolute; inset:0; padding:78px 20px 0; z-index:2; }
+  .welcome { text-align:center; color:#fff; text-shadow:0 2px 14px rgba(120,40,10,.25); }
+  .w-small { font-size:13px; font-weight:500; opacity:.9; letter-spacing:.03em; }
+  .w-name  { font-size:27px; font-weight:700; letter-spacing:-.02em; margin-top:2px; }
+
+  .chev-row { margin:18px 2px 10px; height:34px; border-radius:17px;
+    background:rgba(255,255,255,.55); display:flex; align-items:center;
+    justify-content:flex-end; padding:0 14px; color:#4c4c52; font-size:14px; }
+
+  .premium-card { background:#fff; border-radius:24px; padding:0 0 18px;
+    box-shadow:0 18px 40px rgba(60,40,20,.14); position:relative; overflow:hidden; }
+  .claims-strip { display:flex; align-items:center; gap:10px;
+    background:linear-gradient(90deg,#fbe3d2,#f7ede2 70%); padding:12px 16px; }
+  .claims-strip .ticket { width:30px; height:30px; border-radius:9px; flex:0 0 auto;
+    background:linear-gradient(160deg,#ff9b57,#ef5a35); color:#fff; font-size:12px;
+    font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .claims-strip span { font-size:13px; color:#5a4a3e; font-weight:500; }
+  .receipt-ghost { position:absolute; right:16px; top:52px; opacity:.14; }
+  .pc-body { padding:16px 18px 0; }
+  .pc-title { font-size:19px; font-weight:700; color:#1d1e22; letter-spacing:-.01em; }
+  .pc-due { display:flex; align-items:center; gap:6px; margin-top:6px;
+    font-size:12.5px; color:#96969c; }
+  .pc-row { display:flex; align-items:flex-end; justify-content:space-between; margin-top:16px; }
+  .pc-amount { font-size:15px; font-weight:600; color:#3a3b40; padding-bottom:8px; }
+  .btn-dark { background:#17181c; color:#fff; border:0; cursor:pointer;
+    font:600 13.5px/1 inherit; padding:14px 22px; border-radius:999px;
+    box-shadow:0 10px 22px rgba(15,15,20,.35); }
+
+  .section-title { font-size:19px; font-weight:700; color:#26272c; margin:24px 4px 12px; }
+  .services { display:flex; flex-wrap:wrap; gap:10px; }
+  .chip { display:flex; align-items:center; gap:7px; background:#fbfaf7;
+    border:1px solid rgba(0,0,0,.04); border-radius:999px; padding:11px 16px;
+    font-size:13px; font-weight:600; color:#3c3d43; cursor:pointer;
+    box-shadow:0 6px 16px rgba(70,50,30,.07); }
+  .chip svg { color:#8f9097; }
+  .event-card { background:#fff; border-radius:20px; padding:14px 16px; margin-top:2px;
+    display:flex; align-items:center; gap:12px; box-shadow:0 10px 24px rgba(60,40,20,.08); }
+  .event-thumb { width:44px; height:44px; border-radius:14px; flex:0 0 auto;
+    background:linear-gradient(140deg,#ffd9a8,#f4744a); }
+  .event-card b { font-size:13.5px; color:#2a2b30; display:block; }
+  .event-card small { font-size:12px; color:#9a9aa1; }
+
+  .bottomnav { position:absolute; left:0; right:0; bottom:0; z-index:3;
+    background:rgba(250,249,246,.92); backdrop-filter:blur(10px);
+    border-top:1px solid rgba(0,0,0,.05);
+    display:flex; justify-content:space-around; padding:12px 10px 26px; }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:4px;
+    font-size:10.5px; font-weight:600; color:#a0a0a7; }
+  .nav-item.active { color:#1d1e22; }
+  .home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+    width:130px; height:5px; border-radius:3px; background:#1d1e22; z-index:5; }
+
+  /* ---------- premium modal ---------- */
+  .modal-layer { position:absolute; inset:0; z-index:20; }
+  .modal-dim { position:absolute; inset:0; background:rgba(214,205,196,.36); opacity:0; }
+  .modal-close { position:absolute; top:66px; right:22px; z-index:3; }
+  .circle-btn { width:42px; height:42px; border-radius:50%; border:0; cursor:pointer;
+    background:#fff; color:#26272c; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px rgba(50,40,30,.18); font-size:15px; }
+  .pay-sheet { position:absolute; left:18px; right:18px; top:300px; z-index:2;
+    background:rgba(24,25,29,.94); border-radius:26px; padding:20px 18px 18px;
+    box-shadow:0 30px 70px rgba(10,10,15,.45); color:#fff; will-change:transform; }
+  .sheet-h1 { font-size:18px; font-weight:700; letter-spacing:-.01em; }
+  .sheet-sub { display:flex; align-items:center; gap:6px; font-size:12px; color:#9d9da5; margin-top:5px; }
+  .member { display:flex; align-items:center; gap:11px; background:#26272d;
+    border-radius:18px; padding:12px 14px; margin-top:10px; }
+  .m-check { width:22px; height:22px; border-radius:50%; flex:0 0 auto;
+    background:linear-gradient(150deg,#ff9b57,#ef5a35); display:flex;
+    align-items:center; justify-content:center; }
+  .m-ava { width:38px; height:38px; border-radius:50%; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:#fff; }
+  .m-info { flex:1; min-width:0; }
+  .m-name { font-size:14px; font-weight:600; }
+  .m-id { font-size:11px; color:#8f8f98; margin-top:2px; }
+  .m-price { font-size:14px; font-weight:700; }
+  .slide-track { position:relative; margin-top:16px; height:58px; border-radius:29px;
+    background:#101114; overflow:hidden; touch-action:none; }
+  .slide-fill { position:absolute; inset:0 auto 0 0; width:0;
+    background:linear-gradient(90deg,#2c2d33,#3a3b42); border-radius:29px; }
+  .slide-hint { position:absolute; inset:0; display:flex; align-items:center;
+    justify-content:center; padding-left:90px; font-size:12.5px; color:#87878f; }
+  .knob { position:absolute; top:6px; left:6px; height:46px; padding:0 22px;
+    border-radius:23px; background:#f0efec; color:#141519; font-size:13.5px;
+    font-weight:700; display:flex; align-items:center; gap:8px; cursor:grab;
+    user-select:none; touch-action:none; box-shadow:0 6px 16px rgba(0,0,0,.4);
+    will-change:transform; }
+  .pay-success { position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:12px; }
+  .pay-success div { font-size:15px; font-weight:600; }
+  .pay-success small { font-size:12px; color:#9d9da5; margin-top:-6px; }
+
+  /* ---------- hospitals ---------- */
+  .map-bg { position:absolute; inset:0; }
+  .map-bg svg { width:100%; height:100%; display:block; }
+  .screen-header { position:absolute; top:64px; left:18px; right:18px; z-index:5;
+    display:flex; align-items:center; gap:14px; }
+  .screen-header h1 { font-size:20px; font-weight:700; color:#26272c; letter-spacing:-.01em; }
+  .screen-header .spacer { flex:1; }
+  .pin { position:absolute; z-index:3; width:34px; height:34px; margin:-17px 0 0 -17px;
+    border-radius:50%; background:#fff; box-shadow:0 6px 14px rgba(60,45,25,.22);
+    display:flex; align-items:center; justify-content:center; color:#ef6135; }
+  .hosp-cards { position:absolute; left:16px; right:16px; bottom:24px; z-index:6; }
+  .hosp-card { position:relative; background:#fff; border-radius:22px; padding:14px 16px 14px 112px;
+    min-height:96px; margin-top:12px; cursor:pointer;
+    box-shadow:0 16px 36px rgba(60,40,20,.16); }
+  .hc-thumb { position:absolute; left:14px; top:14px; bottom:14px; width:84px;
+    border-radius:16px; overflow:hidden; }
+  .hc-thumb svg { width:100%; height:100%; display:block; }
+  .tag { display:inline-block; font-size:10.5px; font-weight:700; color:#4b3520;
+    padding:5px 10px; border-radius:999px; letter-spacing:.02em; }
+  .tag.orange { background:linear-gradient(90deg,#ffb469,#ff9052); }
+  .tag.pink   { background:linear-gradient(90deg,#ffb9c8,#ff97ad); color:#5c2433; }
+  .tag.blue   { background:linear-gradient(90deg,#b9d4ff,#96bdf5); color:#1f3a63; }
+  .hc-name { font-size:15px; font-weight:700; color:#26272c; margin-top:7px; }
+  .hc-addr { display:flex; align-items:center; gap:5px; font-size:12px; color:#96969c; margin-top:4px; }
+
+  /* ---------- hospital detail ---------- */
+  .detail-card { position:absolute; left:16px; right:16px; top:120px; z-index:6;
+    background:#fff; border-radius:26px; padding:14px 18px 18px;
+    box-shadow:0 24px 54px rgba(60,40,20,.2); will-change:transform; }
+  .detail-photo { border-radius:18px; overflow:hidden; height:190px; }
+  .detail-photo svg { width:100%; height:100%; display:block; }
+  .detail-card .tag { margin-top:14px; }
+  .d-name { font-size:20px; font-weight:700; color:#212227; letter-spacing:-.01em; margin-top:8px; }
+  .d-meta { display:flex; align-items:center; gap:6px; font-size:12.5px; color:#96969c; margin-top:7px; }
+  .d-meta .ok { color:#3f9d63; font-weight:600; }
+  .d-actions { display:flex; align-items:center; gap:10px; margin-top:16px; }
+  .d-actions .btn-dark { display:flex; align-items:center; gap:8px; }
+  .icon-btn { width:44px; height:44px; border-radius:50%; border:1px solid #ececea;
+    background:#faf9f6; color:#3c3d43; display:flex; align-items:center;
+    justify-content:center; cursor:pointer; }
+  .route-map { position:absolute; left:0; right:0; bottom:0; height:290px; z-index:4; }
+  .route-map svg { width:100%; height:100%; display:block; }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <button id="playDemo">▶ Play demo</button>
+  <span class="hint">or explore: View Premium → slide to pay · Hospitals → tap a card</span>
+</div>
+
+<div class="phone-wrap">
+  <div class="phone" id="phone">
+    <div class="screen" id="screen">
+
+      <!-- ============ HOME ============ -->
+      <section class="view" id="view-home">
+        <div class="hero">
+          <div class="blob b2" id="blob2"></div>
+          <div class="blob b1" id="blob1"></div>
+          <div class="blob b3" id="blob3"></div>
+        </div>
+        <div class="home-content">
+          <header class="welcome anim-in">
+            <div class="w-small">Welcome Back</div>
+            <div class="w-name">Willie Schulist</div>
+          </header>
+
+          <div class="chev-row anim-in">›</div>
+
+          <div class="premium-card anim-in" id="premiumCard">
+            <div class="claims-strip">
+              <div class="ticket">2</div>
+              <span>You have 2 claims in progress</span>
+            </div>
+            <svg class="receipt-ghost" width="74" height="88" viewBox="0 0 74 88">
+              <path d="M6 4h62v74l-8-6-8 6-8-6-8 6-8-6-8 6-8-6-6 6z" fill="#d9853f"/>
+              <rect x="16" y="18" width="42" height="5" rx="2.5" fill="#fff"/>
+              <rect x="16" y="30" width="30" height="5" rx="2.5" fill="#fff"/>
+              <rect x="16" y="42" width="36" height="5" rx="2.5" fill="#fff"/>
+            </svg>
+            <div class="pc-body">
+              <div class="pc-title">3 Upcoming Premiums</div>
+              <div class="pc-due">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                Due in 27 days
+              </div>
+              <div class="pc-row">
+                <div class="pc-amount">$2,322.98</div>
+                <button class="btn-dark" id="viewPremiumBtn">View Premium</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title anim-in">Services</div>
+          <div class="services anim-in">
+            <div class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>Payment</div>
+            <div class="chip" id="chipHospitals"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/></svg>Hospitals</div>
+            <div class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="13" height="12" rx="3"/><path d="M15 10l7-4v12l-7-4"/></svg>Teleconsult</div>
+            <div class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg>Statement Download</div>
+            <div class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 1 1-3-6.2L21 5l-1 4z"/></svg>Chat with Us</div>
+            <div class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16V8m0 0l-3.5 3.5M12 8l3.5 3.5"/></svg>Top Up</div>
+          </div>
+
+          <div class="section-title anim-in">Events</div>
+          <div class="event-card anim-in">
+            <div class="event-thumb"></div>
+            <div><b>Community Health Week</b><small>Sat, Aug 2 · Prospect Park Pavilion</small></div>
+          </div>
+        </div>
+
+        <nav class="bottomnav">
+          <div class="nav-item active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>Home</div>
+          <div class="nav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Claims</div>
+          <div class="nav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-2.5-4-4-6-3s-.5 4 2 4zm0 0c1.5-2.5 4-4 6-3s.5 4-2 4z"/></svg>Rewards</div>
+          <div class="nav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="18" r="2.4"/></svg>More</div>
+        </nav>
+        <div class="home-indicator"></div>
+      </section>
+
+      <!-- ============ HOSPITALS ============ -->
+      <section class="view" id="view-hospitals" hidden>
+        <div class="map-bg">
+          <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
+            <rect width="390" height="844" fill="#efeae1"/>
+            <path d="M-20 180 C 90 140, 150 210, 140 330 C 132 440, 60 520, -20 540 Z" fill="#dee7d2"/>
+            <path d="M40 560 C 120 540, 190 590, 180 700 C 172 790, 90 830, 10 820 L -20 640 Z" fill="#e3ead6" opacity=".8"/>
+            <g stroke="#ffffff" stroke-width="12" fill="none" opacity=".95">
+              <path d="M180 -20 L 320 844"/>
+              <path d="M-20 300 L 420 190"/>
+              <path d="M-20 430 L 420 330"/>
+            </g>
+            <g stroke="#ffffff" stroke-width="6" fill="none" opacity=".8">
+              <path d="M240 -20 L 360 844"/>
+              <path d="M120 -20 L 260 844"/>
+              <path d="M-20 540 L 420 440"/>
+              <path d="M-20 650 L 420 560"/>
+              <path d="M-20 760 L 420 680"/>
+            </g>
+            <g fill="#a09a8e" font-size="11" font-family="system-ui" font-weight="500">
+              <text x="228" y="252" transform="rotate(-14 228 252)">Empire Blvd</text>
+              <text x="238" y="372" transform="rotate(-14 238 372)">Lefferts Ave</text>
+              <text x="244" y="486" transform="rotate(-13 244 486)">Maple St</text>
+              <text x="236" y="596" transform="rotate(-12 236 596)">Fenimore St</text>
+              <text x="304" y="330" transform="rotate(72 304 330)">Bedford Ave</text>
+              <text x="46" y="320" opacity=".9">Prospect Park</text>
+              <text x="52" y="640" opacity=".9">Lakeside</text>
+            </g>
+            <g fill="#26272c" font-size="11.5" font-weight="700" font-family="system-ui">
+              <rect x="196" y="440" width="26" height="16" rx="8" fill="#26272c"/>
+              <text x="203" y="452" fill="#fff" font-size="9">PP</text>
+              <text x="228" y="453">Prospect Pk</text>
+            </g>
+          </svg>
+        </div>
+        <div class="pin" style="left:22%; top:41%"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3h2v8h8v2h-8v8h-2v-8H3v-2h8z"/></svg></div>
+        <div class="pin" style="left:55%; top:52%"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3h2v8h8v2h-8v8h-2v-8H3v-2h8z"/></svg></div>
+        <div class="pin" style="left:38%; top:63%"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3h2v8h8v2h-8v8h-2v-8H3v-2h8z"/></svg></div>
+
+        <header class="screen-header">
+          <button class="circle-btn" id="hospBack">←</button>
+          <h1>Hospitals</h1>
+          <div class="spacer"></div>
+          <button class="circle-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="10" height="10" rx="2"/><rect x="10" y="10" width="10" height="10" rx="2"/></svg></button>
+          <button class="circle-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+        </header>
+
+        <div class="hosp-cards" id="hospCards"></div>
+      </section>
+
+      <!-- ============ HOSPITAL DETAIL ============ -->
+      <section class="view" id="view-detail" hidden>
+        <div class="map-bg" style="opacity:.55">
+          <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
+            <rect width="390" height="844" fill="#efeae1"/>
+          </svg>
+        </div>
+        <div id="detailExtras">
+          <header class="screen-header">
+            <button class="circle-btn" id="detailBack">←</button>
+            <h1>Hospitals</h1>
+            <div class="spacer"></div>
+            <button class="circle-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="10" height="10" rx="2"/><rect x="10" y="10" width="10" height="10" rx="2"/></svg></button>
+          </header>
+          <div class="route-map">
+            <svg viewBox="0 0 390 290" preserveAspectRatio="none" id="routeSvg">
+              <rect width="390" height="290" fill="#efeae1"/>
+              <g stroke="#ffffff" stroke-width="9" fill="none" opacity=".95">
+                <path d="M-10 60 L 400 110"/>
+                <path d="M-10 170 L 400 210"/>
+                <path d="M60 -10 L 130 300"/>
+                <path d="M220 -10 L 300 300"/>
+              </g>
+              <g fill="#a09a8e" font-size="10.5" font-family="system-ui">
+                <text x="150" y="95" transform="rotate(7 150 95)">Parkside Ave</text>
+                <text x="150" y="200" transform="rotate(6 150 200)">Church Av</text>
+                <text x="252" y="120" transform="rotate(74 252 120)">Flatbush Ave</text>
+              </g>
+              <path id="routePath" d="M 70 250 C 120 230, 140 180, 200 150 C 250 125, 290 90, 330 60"
+                    fill="none" stroke="#1b1c20" stroke-width="4" stroke-linecap="round"/>
+              <circle id="routeStart" cx="70" cy="250" r="9" fill="#ef6135"/>
+              <circle id="routeStartHalo" cx="70" cy="250" r="9" fill="none" stroke="#ef6135" stroke-width="2" opacity=".5"/>
+              <g id="routeEnd">
+                <circle cx="330" cy="60" r="11" fill="#1b1c20"/>
+                <circle cx="330" cy="60" r="4" fill="#fff"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="detail-card" id="detailCard">
+          <div id="detailCardContent">
+            <div class="detail-photo" id="detailPhoto"></div>
+            <span class="tag orange" id="dTag">General &amp; Primary Care</span>
+            <div class="d-name" id="dName">Harmony General Hospital</div>
+            <div class="d-meta">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+              <span id="dAddr">Fenimore St 22A (2.3km)</span>
+            </div>
+            <div class="d-meta"><span class="ok">Open</span> · Close at 23:30</div>
+            <div class="d-actions">
+              <button class="btn-dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 18L18 6M9 6h9v9"/></svg>Direction</button>
+              <div style="flex:1"></div>
+              <button class="icon-btn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></button>
+              <button class="icon-btn"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PAY MODAL ============ -->
+      <div class="modal-layer" id="modalLayer" hidden>
+        <div class="modal-dim" id="modalDim"></div>
+        <button class="circle-btn modal-close" id="modalClose">✕</button>
+        <div class="pay-sheet" id="paySheet">
+          <div id="sheetBody">
+            <div class="stagger">
+              <div class="sheet-h1">3 Upcoming Premiums</div>
+              <div class="sheet-sub">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                Due in 27 days
+              </div>
+            </div>
+            <div id="memberList"></div>
+            <div class="slide-track stagger" id="slideTrack">
+              <div class="slide-fill" id="slideFill"></div>
+              <div class="slide-hint" id="slideHint">Slide to Confirm Payment</div>
+              <div class="knob" id="slideKnob">
+                Pay Now
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="pay-success" id="paySuccess" hidden>
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <circle id="sucCircle" cx="36" cy="36" r="28" fill="none" stroke="#63c684" stroke-width="4" stroke-linecap="round"/>
+              <path id="sucCheck" d="M24 37 l9 9 l16 -18" fill="none" stroke="#63c684" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>Payment Successful</div>
+            <small>$3,698.94 · 3 members covered</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="notch"></div>
+    </div>
+  </div>
+</div>
+
+<div class="caption">Motion study — health-insurance app interaction pattern · animated with GSAP (timelines, Flip, Draggable, DrawSVG)</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Draggable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script>
+/* ================================================================
+   GSAP-driven motion: timelines for sequencing, Flip for the
+   container transforms, Draggable for slide-to-pay, DrawSVG for
+   the check mark and route. No CSS transitions/keyframes.
+   ================================================================ */
+gsap.registerPlugin(Flip, Draggable, DrawSVGPlugin);
+gsap.defaults({ duration: 0.5, ease: "power3.out" });
+
+/* keep the ticker advancing when the browser starves rAF
+   (occluded/background windows) — no-op at normal frame rates */
+let lastTick = performance.now();
+gsap.ticker.add(() => lastTick = performance.now());
+setInterval(() => {
+  if (performance.now() - lastTick > 200) gsap.ticker.tick();
+}, 120);
+
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const clamp = gsap.utils.clamp;
+
+/* accessibility: collapse motion for users who prefer reduced motion */
+gsap.matchMedia().add("(prefers-reduced-motion: reduce)", () => {
+  gsap.globalTimeline.timeScale(100);
+});
+
+/* ---------------------------------------------------------------
+   Data
+   --------------------------------------------------------------- */
+const MEMBERS = [
+  { name: 'Willie Schulist',  id: 'HI1418872904-BB', price: '$1,232.98', grad: ['#f0a468', '#c96b3c'] },
+  { name: 'Anne Marquardt',   id: 'HI1418872904-BB', price: '$1,232.98', grad: ['#9fb3d8', '#5f7bad'] },
+  { name: 'Kristine Gibson',  id: 'HI1418872904-BB', price: '$1,232.98', grad: ['#d8a0b8', '#a85f85'] },
+];
+
+const HOSPITALS = [
+  { tag: 'General & Primary Care',     tagClass: 'orange', name: 'Harmony General Hospital', addr: 'Fenimore St 22A (2.3km)', hue: ['#f7b26a', '#d96a35', '#7a4a2a'] },
+  { tag: 'Dental & Oral Health',       tagClass: 'pink',   name: 'VitalSpring Medical',      addr: 'Fenimore St 22A (2.3km)', hue: ['#f9c58f', '#e5813f', '#8a4a20'] },
+  { tag: 'Mental & Behavioral Health', tagClass: 'blue',   name: 'CalmHarbor Clinic',        addr: 'Ocean Ave 140 (3.1km)',   hue: ['#bcd0e8', '#7d9cc4', '#3d5a80'] },
+];
+
+function buildingSVG([light, mid, dark], seed = 1) {
+  let windows = '';
+  for (let r = 0; r < 6; r++)
+    for (let c = 0; c < 5; c++)
+      windows += `<rect x="${104 + c * 30}" y="${36 + r * 26 + c * 6}" width="20" height="14" rx="2"
+        fill="#fff" opacity="${0.35 + ((r * 5 + c + seed) % 4) * 0.16}"/>`;
+  return `<svg viewBox="0 0 260 200" preserveAspectRatio="xMidYMid slice">
+    <rect width="260" height="200" fill="#e8e2d8"/>
+    <polygon points="0,200 0,90 95,20 95,200" fill="${mid}"/>
+    <polygon points="95,20 110,10 260,120 260,200 95,200" fill="${light}"/>
+    <polygon points="95,20 95,200 110,200 110,10" fill="${dark}"/>
+    ${windows}
+    <g stroke="#fff" stroke-width="3" opacity=".5">
+      <line x1="8" y1="98" x2="88" y2="40"/><line x1="8" y1="128" x2="88" y2="70"/>
+      <line x1="8" y1="158" x2="88" y2="100"/><line x1="8" y1="188" x2="88" y2="130"/>
+    </g>
+  </svg>`;
+}
+
+$('#memberList').innerHTML = MEMBERS.map(m => `
+  <div class="member">
+    <div class="m-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg></div>
+    <div class="m-ava" style="background:linear-gradient(150deg,${m.grad[0]},${m.grad[1]})">${m.name.split(' ').map(w => w[0]).join('')}</div>
+    <div class="m-info"><div class="m-name">${m.name}</div><div class="m-id">${m.id}</div></div>
+    <div class="m-price">${m.price}</div>
+  </div>`).join('');
+
+$('#hospCards').innerHTML = HOSPITALS.map((h, i) => `
+  <article class="hosp-card" data-i="${i}">
+    <div class="hc-thumb">${buildingSVG(h.hue, i + 1)}</div>
+    <span class="tag ${h.tagClass}">${h.tag}</span>
+    <div class="hc-name">${h.name}</div>
+    <div class="hc-addr">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      ${h.addr}
+    </div>
+  </article>`).join('');
+
+/* ---------------------------------------------------------------
+   Fit phone to viewport
+   --------------------------------------------------------------- */
+function fitPhone() {
+  const s = Math.min((innerHeight - 110) / 872, (innerWidth - 60) / 418, 1);
+  gsap.set('#phone', { scale: s });
+}
+addEventListener('resize', fitPhone);
+fitPhone();
+
+/* ---------------------------------------------------------------
+   Ambient motion (infinite yoyo tweens instead of a manual rAF loop)
+   --------------------------------------------------------------- */
+gsap.to('#blob1', { x: 26, y: -20, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+gsap.to('#blob2', { x: -22, y: 18, duration: 3.8, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+gsap.to('#blob3', { x: 18, y: 24, duration: 2.9, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+gsap.fromTo('#routeStartHalo',
+  { attr: { r: 9 }, autoAlpha: 0.55 },
+  { attr: { r: 23 }, autoAlpha: 0, duration: 1.5, repeat: -1, ease: 'sine.out' });
+
+/* press feedback on tap */
+const press = el =>
+  gsap.fromTo(el, { scale: 0.92 }, { scale: 1, duration: 0.45, ease: 'back.out(2.5)', clearProps: 'scale' });
+
+/* ---------------------------------------------------------------
+   State + view transitions
+   --------------------------------------------------------------- */
+let busy = false;
+let paid = false;
+let currentHospital = 0;
+
+const vHome = $('#view-home'), vHosp = $('#view-hospitals'), vDetail = $('#view-detail');
+const layer = $('#modalLayer'), sheet = $('#paySheet'), dim = $('#modalDim');
+const premiumCard = $('#premiumCard');
+const detailCard = $('#detailCard'), detailContent = $('#detailCardContent'),
+      detailExtras = $('#detailExtras');
+
+function switchView(fromEl, toEl) {
+  toEl.hidden = false;
+  const tl = gsap.timeline();
+  tl.to(fromEl, {
+      autoAlpha: 0, scale: 0.95, duration: 0.3, ease: 'power2.in',
+      onComplete() { fromEl.hidden = true; gsap.set(fromEl, { clearProps: 'all' }); }
+    }, 0)
+    .fromTo(toEl,
+      { autoAlpha: 0, y: 34, scale: 0.97 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, clearProps: 'transform' },
+      0.08);
+  return tl;
+}
+
+/* ---- premium modal: Flip the sheet out of the card ---- */
+async function openPremium() {
+  if (busy || !layer.hidden) return; busy = true;
+  layer.hidden = false;
+
+  const rows = $$('#sheetBody > .stagger, #sheetBody .member');
+  gsap.set(premiumCard, { autoAlpha: 0.25 });
+  gsap.set(rows, { autoAlpha: 0, y: 18 });
+
+  /* FLIP: capture the sheet's natural state, snap it onto the card,
+     then animate back to the captured state. */
+  const state = Flip.getState(sheet);
+  Flip.fit(sheet, premiumCard, { scale: true });
+
+  const tl = gsap.timeline();
+  tl.to(dim, { autoAlpha: 0.9, duration: 0.45 }, 0)
+    .to(vHome, {
+      scale: 0.965, filter: 'blur(9px) saturate(.82) brightness(.9)',
+      duration: 0.45, ease: 'power2.out'
+    }, 0)
+    .fromTo(sheet, { autoAlpha: 0.35 }, { autoAlpha: 1, duration: 0.3 }, 0)
+    .add(Flip.fit(sheet, state, { scale: true, duration: 0.55, ease: 'power4.inOut' }), 0)
+    .to(rows, { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.45, ease: 'back.out(1.6)' }, 0.3);
+  await tl;
+
+  slider.applyBounds({ minX: 0, maxX: maxPos() });
+  busy = false;
+}
+
+async function closePremium() {
+  if (busy || layer.hidden) return; busy = true;
+
+  const tl = gsap.timeline();
+  tl.add(Flip.fit(sheet, premiumCard, { scale: true, duration: 0.45, ease: 'power3.inOut' }), 0)
+    .to(sheet, { autoAlpha: 0, duration: 0.32, ease: 'power2.in' }, 0.1)
+    .to(dim, { autoAlpha: 0, duration: 0.4 }, 0)
+    .to(vHome, {
+      scale: 1, filter: 'blur(0px) saturate(1) brightness(1)',
+      duration: 0.45, ease: 'power2.out'
+    }, 0);
+  await tl;
+
+  layer.hidden = true;
+  gsap.set(sheet, { clearProps: 'all' });
+  gsap.set(vHome, { clearProps: 'filter,transform' });
+  gsap.set(premiumCard, { autoAlpha: 1 });
+
+  /* reset pay state */
+  $('#paySuccess').hidden = true;
+  gsap.set('#sheetBody', { clearProps: 'opacity,visibility' });
+  gsap.set('#paySuccess', { clearProps: 'all' });
+  paid = false;
+  slider.enable();
+  gsap.set(knob, { x: 0 });
+  syncSlider();
+  busy = false;
+}
+
+/* ---- slide to confirm (Draggable) ---- */
+const knob = $('#slideKnob'), track = $('#slideTrack'),
+      fill = $('#slideFill'), hint = $('#slideHint');
+const maxPos = () => track.clientWidth - knob.offsetWidth - 12;
+
+function syncSlider() {
+  const x = gsap.getProperty(knob, 'x');
+  fill.style.width = (x + knob.offsetWidth + 6) + 'px';
+  gsap.set(hint, { opacity: clamp(0, 1, 1 - x / Math.max(maxPos(), 1) * 1.6) });
+}
+
+const slider = Draggable.create(knob, {
+  type: 'x',
+  bounds: { minX: 0, maxX: 260 },   /* real bounds applied on open */
+  edgeResistance: 0.8,
+  onDrag: syncSlider,
+  onDragEnd() {
+    if (paid || busy) return;
+    if (this.x > maxPos() * 0.86) completePay();
+    else gsap.to(knob, { x: 0, duration: 0.55, ease: 'back.out(1.1)', onUpdate: syncSlider });
+  }
+})[0];
+
+async function completePay() {
+  if (paid || busy) return;
+  paid = true; busy = true;      /* block navigation until the sheet closes */
+  slider.disable();
+  await gsap.to(knob, { x: maxPos(), duration: 0.18, ease: 'power2.out', onUpdate: syncSlider });
+
+  await gsap.to('#sheetBody', { autoAlpha: 0, duration: 0.22 });
+  const suc = $('#paySuccess');
+  suc.hidden = false;
+
+  /* pop in, then draw circle + check with DrawSVG */
+  const tl = gsap.timeline();
+  tl.fromTo(suc, { autoAlpha: 0, scale: 0.72 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'back.out(2)' })
+    .from('#sucCircle', { drawSVG: '0% 0%', duration: 0.5, ease: 'power2.inOut' }, 0.05)
+    .from('#sucCheck',  { drawSVG: '0% 0%', duration: 0.28 }, '-=0.1');
+  await tl;
+
+  await sleep(1000);
+  busy = false;                  /* hand off to closePremium's own guard */
+  await closePremium();
+}
+
+/* ---- hospitals ---- */
+async function openHospitals() {
+  if (busy || !vHosp.hidden) return; busy = true;
+  const cards = $$('.hosp-card'), pins = $$('#view-hospitals .pin');
+  gsap.set(cards, { autoAlpha: 0 });
+  gsap.set(pins, { autoAlpha: 0, scale: 0, transformOrigin: '50% 50%' });
+
+  await switchView(vHome, vHosp);
+
+  const tl = gsap.timeline();
+  tl.to(pins, { autoAlpha: 1, scale: 1, stagger: 0.1, duration: 0.5, ease: 'back.out(2.2)' }, 0)
+    .fromTo(cards,
+      { autoAlpha: 0, y: 56 },
+      { autoAlpha: 1, y: 0, stagger: 0.09, duration: 0.6, ease: 'back.out(1.3)', clearProps: 'transform' },
+      0.05);
+  await tl;
+  busy = false;
+}
+
+async function backHome() {
+  if (busy || vHosp.hidden) return; busy = true;
+  await switchView(vHosp, vHome);
+  busy = false;
+}
+
+/* ---- hospital detail: Flip the detail card out of the list card ---- */
+function loadDetail(i) {
+  const h = HOSPITALS[i];
+  $('#detailPhoto').innerHTML = buildingSVG(h.hue, i + 1);
+  const tag = $('#dTag');
+  tag.textContent = h.tag;
+  tag.className = 'tag ' + h.tagClass;
+  $('#dName').textContent = h.name;
+  $('#dAddr').textContent = h.addr;
+}
+
+async function openDetail(i) {
+  if (busy || !vDetail.hidden) return; busy = true;
+  currentHospital = i;
+  loadDetail(i);
+
+  const card = $$('.hosp-card')[i];
+  vDetail.hidden = false;
+  gsap.set(vDetail, { autoAlpha: 1 });
+  gsap.set(detailExtras, { autoAlpha: 0 });
+  gsap.set(detailContent, { autoAlpha: 0.3 });
+
+  const state = Flip.getState(detailCard);
+  Flip.fit(detailCard, card, { scale: true });
+
+  gsap.to(vHosp, {
+    autoAlpha: 0, duration: 0.28,
+    onComplete() { vHosp.hidden = true; gsap.set(vHosp, { clearProps: 'all' }); }
+  });
+
+  const tl = gsap.timeline();
+  tl.add(Flip.fit(detailCard, state, { scale: true, duration: 0.6, ease: 'power4.inOut' }), 0)
+    .to(detailContent, { autoAlpha: 1, duration: 0.45 }, 0.15)
+    .to(detailExtras, { autoAlpha: 1, duration: 0.35 }, 0.3)
+    .from('#routePath', { drawSVG: '0% 0%', duration: 0.7, ease: 'power2.inOut' }, 0.45)
+    .from('#routeEnd', { scale: 0, svgOrigin: '330 60', duration: 0.4, ease: 'back.out(2.5)' }, '-=0.15');
+  await tl;
+  busy = false;
+}
+
+async function backToHospitals() {
+  if (busy || vDetail.hidden) return; busy = true;
+  vHosp.hidden = false;
+  gsap.fromTo(vHosp, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 });
+
+  const card = $$('.hosp-card')[currentHospital];
+  const tl = gsap.timeline();
+  tl.to(detailExtras, { autoAlpha: 0, duration: 0.2 }, 0)
+    .to(detailContent, { autoAlpha: 0.25, duration: 0.3 }, 0)
+    .add(Flip.fit(detailCard, card, { scale: true, duration: 0.45, ease: 'power3.inOut' }), 0)
+    .to(detailCard, { autoAlpha: 0, duration: 0.15 }, '-=0.1');
+  await tl;
+
+  vDetail.hidden = true;
+  gsap.set([detailCard, detailContent, detailExtras, vHosp], { clearProps: 'all' });
+  busy = false;
+}
+
+/* ---------------------------------------------------------------
+   Wiring
+   --------------------------------------------------------------- */
+$('#viewPremiumBtn').addEventListener('click', e => { press(e.currentTarget); openPremium(); });
+$('#modalClose').addEventListener('click', () => closePremium());
+$('#hospBack').addEventListener('click', () => backHome());
+$('#detailBack').addEventListener('click', () => backToHospitals());
+$$('.chip').forEach(ch => ch.addEventListener('click', () => {
+  press(ch);
+  if (ch.id === 'chipHospitals') openHospitals();
+}));
+$('#hospCards').addEventListener('click', e => {
+  const card = e.target.closest('.hosp-card');
+  if (card) openDetail(+card.dataset.i);
+});
+
+/* intro */
+gsap.from('#view-home .anim-in', {
+  y: 30, autoAlpha: 0, stagger: 0.085, duration: 0.6, clearProps: 'transform'
+});
+
+/* ---------------------------------------------------------------
+   Auto demo — replays the full sequence from the reference video
+   --------------------------------------------------------------- */
+let demoRunning = false;
+$('#playDemo').addEventListener('click', async () => {
+  if (demoRunning || busy) return;
+  demoRunning = true;
+  const btn = $('#playDemo');
+  btn.textContent = '● Playing…';
+  try {
+    if (!layer.hidden) await closePremium();
+    if (!vDetail.hidden) await backToHospitals();
+    if (!vHosp.hidden) await backHome();
+
+    await sleep(500);
+    press($('#viewPremiumBtn'));
+    await sleep(140);
+    await openPremium();
+    await sleep(650);
+    await gsap.to(knob, { x: maxPos(), duration: 0.85, ease: 'power2.inOut', onUpdate: syncSlider });
+    await completePay();               /* includes success + close */
+    await sleep(550);
+    press($('#chipHospitals'));
+    await sleep(140);
+    await openHospitals();
+    await sleep(850);
+    await openDetail(0);
+    await sleep(1700);
+    await backToHospitals();
+    await sleep(500);
+    await backHome();
+  } finally {
+    btn.textContent = '▶ Play demo';
+    demoRunning = false;
+  }
+});
+</script>
+</body>
+</html>
