@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-public-sans);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+/* hide the page scrollbar but keep the page scrollable */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  background-color: #f5f3f1;
+  /* hercules.app-style triangulated grid: X + square outline per 160px cell, shown at 80px */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23000' stroke-width='0.5' opacity='0.17'%3E%3Cline x1='0' y1='0' x2='160' y2='160'/%3E%3Cline x1='160' y1='0' x2='0' y2='160'/%3E%3Crect width='160' height='160' opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
+  font-family: var(--font-public-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.dark body {
+  background-color: #04070f;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23fff' stroke-width='0.5' opacity='0.08'%3E%3Cline x1='0' y1='0' x2='160' y2='160'/%3E%3Cline x1='160' y1='0' x2='0' y2='160'/%3E%3Crect width='160' height='160' opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@layer base {
+  a {
+    color: #4f46e5;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #3730a3;
+    text-decoration: underline;
+  }
+
+  .dark a {
+    color: #22d3ee;
+  }
+
+  .dark a:hover {
+    color: #67e8f9;
+  }
+}
+
+.font-sora {
+  font-family: var(--font-sora), sans-serif;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .text-gradient {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: #e0f2fe;
+}

@@ -1,0 +1,2 @@
+{"event":"task_completed","teammate":"","task_id":"2","subject":"Scaffold Next.js 16 app with Tailwind + deps","description":"create-next-app in site/, install motion, next-themes, ogl (for Grainient), set up fonts, globals.cs","timestamp":"2026-07-03T22:07:32Z"}
+{"event":"task_completed","teammate":"","task_id":"3","subject":"Implement components via Sonnet agents","description":"Parallel Sonnet agents: (A) left panel + scroll-spy nav, (B) hero + Grainient + stats + tech stack, ","timestamp":"2026-07-03T22:11:38Z"}
