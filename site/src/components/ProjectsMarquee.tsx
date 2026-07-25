@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Hero } from "@/components/Morph";
 import { ProjectIdentity, projectSurface } from "@/components/identities";
@@ -21,10 +21,31 @@ const spring = { type: "spring", stiffness: 380, damping: 28 } as const;
 
 /** px/second — slow enough to read a card as it passes. */
 const SPEED = 44;
-/** Let the entrance settle (or an arriving morph land) before the row moves off. */
-const START_DELAY = 900;
+/**
+ * Held still this long when a card is flying back into the row, so it lands on
+ * a stationary target. Only then — a first load has nothing to land, and
+ * freezing the row while the page settles just reads as broken.
+ */
+const MORPH_SETTLE = 900;
+/**
+ * Time constant of the glide to a halt — a hover should read as catching the
+ * row rather than hitting a wall. Only the slowing down is eased: letting go
+ * hands the row straight back at full speed, because a ramp there is felt as
+ * lag, not as easing.
+ */
+const EASE_OUT_TAU = 170;
+/** Below this the row is not perceptibly moving, so treat it as stopped. */
+const CREEP = 0.5;
 /** Past this much travel a press is a drag, not a click on the card underneath. */
 const DRAG_SLOP = 6;
+
+/**
+ * How far the row has travelled, kept outside the component because opening a
+ * project unmounts the whole home view. The clock keeps ticking while you are
+ * away: coming back finds the row where it would have got to, rather than
+ * snapped to the first card.
+ */
+const travel = { pos: 0, at: 0 };
 
 export default function ProjectsMarquee({
   onSelect,
@@ -51,21 +72,49 @@ export default function ProjectsMarquee({
     });
   }, []);
 
+  /**
+   * Puts the row back where it left off — as the ref of the scroller's first
+   * child, so it runs before the cards do.
+   *
+   * A card returning from its detail view measures its destination in a layout
+   * effect, and layout effects run child-first: restoring from this component's
+   * own effect would happen after every card had already measured a strip still
+   * sitting at zero, and each one would fly to the wrong place and then snap.
+   * Refs attach in that same child-first walk, so being the first child is what
+   * buys the ordering. Hence the marker element and the reach for `parentElement`
+   * — this component's own refs are not attached this early either.
+   */
+  const restoreTravel = useCallback(
+    (marker: HTMLSpanElement | null) => {
+      const vp = marker?.parentElement;
+      const copy = vp?.querySelector<HTMLElement>("[data-marquee-copy]");
+      if (!vp || !copy) return;
+      const span = copy.offsetWidth;
+      if (span <= 0) return;
+
+      const now = performance.now();
+      if (!reduceMotion) {
+        if (travel.at) travel.pos += (SPEED * (now - travel.at)) / 1000;
+        travel.at = now;
+      }
+      travel.pos = ((travel.pos % span) + span) % span;
+      vp.scrollLeft = travel.pos;
+    },
+    [reduceMotion]
+  );
+
   useEffect(() => {
     if (reduceMotion) return;
     const vp = viewport.current;
     const copy = firstCopy.current;
     if (!vp || !copy) return;
 
-    // Our own position, not scrollLeft: at this speed a frame is well under a
-    // pixel, and reading back a rounded scrollLeft each frame would stall it.
-    let pos = 0;
     let last = 0;
-    let running = false;
+    let speed = 0;
     let raf = 0;
-    const startTimer = window.setTimeout(() => {
-      running = true;
-    }, START_DELAY);
+    // A morph only ever lands on a back-navigation; a first load starts moving
+    // straight away, easing up from nothing as the cards arrive.
+    const startAt = performance.now() + (skip ? MORPH_SETTLE : 0);
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
@@ -73,20 +122,34 @@ export default function ProjectsMarquee({
       last = now;
       const span = copy.offsetWidth; // one full copy of the list
       if (span <= 0) return;
-      if (!running || paused.current) {
-        pos = vp.scrollLeft; // the reader may have scrolled it themselves
+      travel.at = now;
+
+      // A drag is direct manipulation — it takes the row instantly. Hovering
+      // only asks it to slow down, so that one glides.
+      if (!drag.current.active) {
+        const target = paused.current || now < startAt ? 0 : SPEED;
+        speed =
+          target > speed
+            ? target // picking back up is immediate
+            : speed + (target - speed) * (1 - Math.exp(-dt / EASE_OUT_TAU));
+      } else {
+        speed = 0;
+      }
+
+      if (speed < CREEP) {
+        speed = 0;
+        travel.pos = vp.scrollLeft; // stopped: the reader's own scrolling wins
         return;
       }
-      pos = (pos + (SPEED * dt) / 1000) % span;
-      vp.scrollLeft = pos;
+      // travel.pos, not scrollLeft, is the truth: at this speed a frame is well
+      // under a pixel, and reading back a rounded scrollLeft would stall the row.
+      travel.pos = (travel.pos + (speed * dt) / 1000) % span;
+      vp.scrollLeft = travel.pos;
     };
 
     raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(startTimer);
-    };
-  }, [reduceMotion]);
+    return () => cancelAnimationFrame(raf);
+  }, [reduceMotion, skip]);
 
   // Grab-and-throw the row by hand. Touch and pen are left to the browser's own
   // panning — it has momentum and rubber-banding we would only approximate; this
@@ -175,8 +238,10 @@ export default function ProjectsMarquee({
       // scroll container clipping them, at no cost to the surrounding rhythm.
       className="-my-2 overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
+      {/* Not decorative: its ref is where the row's travel is restored. */}
+      <span hidden ref={restoreTravel} />
       <div className="flex w-max items-stretch">
-        <div ref={firstCopy} className="flex shrink-0 items-stretch gap-3 pr-3">
+        <div ref={firstCopy} data-marquee-copy className="flex shrink-0 items-stretch gap-3 pr-3">
           {projects.map((p, i) => card(p, i, false))}
         </div>
         {/* The seam-filler: same cards, hidden from assistive tech. */}

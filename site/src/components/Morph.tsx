@@ -58,11 +58,18 @@ function visibleArea(el: HTMLElement): number {
 function bestCopy(id: string): HTMLElement | null {
   let best: HTMLElement | null = null;
   let bestArea = -1;
+  let bestDist = Infinity;
   const sel = `[data-hero="${CSS.escape(id)}"]:not([data-hero-exit])`;
   for (const el of document.querySelectorAll<HTMLElement>(sel)) {
     const area = visibleArea(el);
-    if (area > bestArea) {
+    const r = el.getBoundingClientRect();
+    // Distance breaks ties — and when a travelling strip has carried every copy
+    // off screen there is nothing but a tie, so the nearest one wins and the
+    // flight heads for the edge it actually left by.
+    const dist = Math.abs((r.left + r.right) / 2 - window.innerWidth / 2);
+    if (area > bestArea || (area === bestArea && dist < bestDist)) {
       bestArea = area;
+      bestDist = dist;
       best = el;
     }
   }
