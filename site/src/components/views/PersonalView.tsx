@@ -1,6 +1,8 @@
 "use client";
 
-import { BackBar, PopIn, ProjectCard } from "@/components/view-parts";
+import { Hero, NewInfo } from "@/components/Morph";
+import { PersonalIdentity, ProjectCard, personalSurface } from "@/components/identities";
+import { BackBar, SectionLabel } from "@/components/view-parts";
 import type { View } from "@/components/view-types";
 import { personalProjects, projects } from "@/data/content";
 
@@ -11,25 +13,33 @@ export default function PersonalView({
   push,
   back,
 }: {
-  push: (v: View) => void;
+  push: (v: View, morphId?: string) => void;
   back: () => void;
 }) {
   return (
     <>
       <BackBar onBack={back}>
-        <span className="font-sora text-[16px] font-bold text-[#0f172a] dark:text-[#f1f5fb]">Personal projects</span>
+        <SectionLabel>PERSONAL</SectionLabel>
       </BackBar>
 
-      <div className="col-span-4 grid grid-cols-3 gap-3 max-[1024px]:col-span-2 max-[1024px]:grid-cols-2 max-[640px]:col-span-1 max-[640px]:grid-cols-1">
-        {allPersonal.map((p, i) => (
-          <ProjectCard
-            key={p.name}
-            p={p}
-            delay={0.08 + i * 0.07}
-            onClick={() => push({ kind: "project", name: p.name })}
-          />
-        ))}
-        <PopIn delay={0.08 + allPersonal.length * 0.07}>
+      {/* The personal-projects row, grown. The row identity remains; the grid
+          of builds below is new and fades in. */}
+      <Hero
+        id="personal-row"
+        style={{ borderRadius: 18 }}
+        className={`col-span-4 flex flex-col gap-[7px] max-[1024px]:col-span-2 max-[640px]:col-span-1 ${personalSurface}`}
+      >
+        <PersonalIdentity />
+
+        <NewInfo delay={0.15} className="mt-2 grid grid-cols-3 gap-3 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+          {allPersonal.map((p, i) => (
+            <ProjectCard
+              key={p.name}
+              p={p}
+              delay={0.2 + i * 0.07}
+              onClick={() => push({ kind: "project", name: p.name }, `proj-card-${p.name}`)}
+            />
+          ))}
           <div className="flex h-full flex-col justify-center gap-2 rounded-[18px] bg-[#0f172a] p-[16px_18px] text-white dark:border dark:border-[rgba(255,255,255,.09)] dark:bg-[rgba(255,255,255,.04)] dark:backdrop-blur-[8px]">
             <span className="font-sora text-[14px] font-bold">More experiments on GitHub</span>
             <a
@@ -41,8 +51,8 @@ export default function PersonalView({
               github.com/XiaoYhun ↗
             </a>
           </div>
-        </PopIn>
-      </div>
+        </NewInfo>
+      </Hero>
     </>
   );
 }

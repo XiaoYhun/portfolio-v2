@@ -1,9 +1,18 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { createContext, useContext } from "react";
 import { motion } from "motion/react";
-import type { TechIcon, Project } from "@/data/content";
+import type { TechIcon } from "@/data/content";
 import { toolbelt } from "@/data/content";
+
+/**
+ * Direction of the last view-stack navigation. On "back" every entrance
+ * animation is skipped so the shrinking hero lands on content that is already
+ * settled instead of fading-in targets.
+ */
+export const NavDirection = createContext<"push" | "back">("push");
+export const useSkipEntrance = () => useContext(NavDirection) === "back";
 
 export const labelClass =
   "font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-[#64748b] dark:text-[#22d3ee]";
@@ -27,10 +36,11 @@ export function PopIn({
   className?: string;
   children: ReactNode;
 }) {
+  const skip = useSkipEntrance();
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 14, scale: 0.96 }}
+      initial={skip ? false : { opacity: 0, y: 14, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1, transition: { ...springPop, delay } }}
     >
       {children}
@@ -50,10 +60,11 @@ export function SlideIn({
   className?: string;
   children: ReactNode;
 }) {
+  const skip = useSkipEntrance();
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, x: from === "left" ? -24 : 24 }}
+      initial={skip ? false : { opacity: 0, x: from === "left" ? -24 : 24 }}
       animate={{
         opacity: 1,
         x: 0,
@@ -85,10 +96,11 @@ export function Reveal({
   className?: string;
   children: ReactNode;
 }) {
+  const skip = useSkipEntrance();
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 10 }}
+      initial={skip ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut", delay } }}
     >
       {children}
@@ -97,10 +109,11 @@ export function Reveal({
 }
 
 export function BackBar({ onBack, children }: { onBack: () => void; children: ReactNode }) {
+  const skip = useSkipEntrance();
   return (
     <motion.div
       className="col-span-4 flex items-center gap-3.5 max-[1024px]:col-span-2 max-[640px]:col-span-1"
-      initial={{ opacity: 0, x: -16 }}
+      initial={skip ? false : { opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0, transition: { duration: 0.3, ease: "easeOut" } }}
     >
       <button
@@ -151,75 +164,30 @@ export function TechChip({
   );
 }
 
-export function ProjectCard({
-  p,
-  onClick,
-  delay = 0,
-}: {
-  p: Project;
-  onClick: () => void;
-  delay?: number;
-}) {
-  return (
-    <PopIn delay={delay}>
-    <motion.div
-      layoutId={`proj-card-${p.name}`}
-      transition={layoutSnap}
-      style={{ borderRadius: 18 }}
-      onClick={onClick}
-      className="flex h-full cursor-pointer flex-col gap-[7px] rounded-[18px] border border-[#e2e8f0] bg-white p-[16px_18px] shadow-[0_3px_12px_rgba(20,40,90,.06)] transition-all duration-[250ms] hover:-translate-y-[3px] hover:border-[#7c3aed] dark:border-[rgba(255,255,255,.09)] dark:bg-[rgba(255,255,255,.04)] dark:shadow-none dark:backdrop-blur-[8px] dark:hover:border-[rgba(34,211,238,.5)] dark:hover:shadow-[0_0_30px_rgba(34,211,238,.12)]"
-    >
-      <div className="flex items-baseline justify-between gap-2">
-        <motion.div layoutId={`proj-name-${p.name}`} transition={layoutSnap} className="font-sora text-[14.5px] font-bold text-[#0f172a] dark:text-[#f1f5fb]">{p.name}</motion.div>
-        <motion.span layoutId={`proj-tag-${p.name}`} transition={layoutSnap} style={{ borderRadius: 999 }} className="whitespace-nowrap rounded-full border border-transparent bg-[linear-gradient(135deg,#eff6ff,#f5f3ff)] px-2 py-[3px] text-[10px] font-bold text-[#4f46e5] dark:border-[rgba(34,211,238,.25)] dark:bg-none dark:bg-[rgba(34,211,238,.1)] dark:text-[#22d3ee]">
-          {p.tag}
-        </motion.span>
-      </div>
-      <div className="text-[11.5px] leading-[1.5] text-[#475569] dark:text-[#8da2c0]">{p.desc}</div>
-      <div className="mt-auto flex items-center gap-2 pt-1">
-        {p.tech.map((t) => (
-          <span key={t.l}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={t.ia} alt={t.l} title={t.l} className="h-4 w-4 object-contain dark:hidden" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={t.ib} alt={t.l} title={t.l} className="hidden h-4 w-4 object-contain opacity-80 dark:block" />
-          </span>
-        ))}
-        <a
-          href={p.url}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className={`ml-auto ${linkPillClass}`}
-        >
-          {p.link} ↗
-        </a>
-      </div>
-    </motion.div>
-    </PopIn>
-  );
-}
-
 export function Toolbelt({
   active,
   onSelect,
   waveDelay = 0.06,
+  wave = true,
 }: {
   active?: string;
   onSelect: (label: string) => void;
   /** base delay for the per-icon entrance wave */
   waveDelay?: number;
+  /** false renders the icons statically — no entrance wave */
+  wave?: boolean;
 }) {
+  const skip = useSkipEntrance();
   return (
     <div className="col-span-4 flex flex-col gap-3 rounded-[18px] border border-[#e2e8f0] bg-[#f8fafc] p-[16px_18px] max-[1024px]:col-span-2 max-[640px]:col-span-1 dark:border-[rgba(255,255,255,.08)] dark:bg-[rgba(255,255,255,.03)] dark:backdrop-blur-[8px]">
-      <SectionLabel>TOOLBELT</SectionLabel>
+      <SectionLabel>TECHSTACK</SectionLabel>
       <div className="flex justify-between gap-1 max-[1024px]:flex-wrap">
         {toolbelt.map((t, i) => {
           const isActive = t.l === active;
           return (
             <motion.div
               key={t.l}
-              initial={{ opacity: 0, y: 12, scale: 0.7 }}
+              initial={skip || !wave ? false : { opacity: 0, y: 12, scale: 0.7 }}
               animate={{
                 opacity: 1,
                 y: 0,

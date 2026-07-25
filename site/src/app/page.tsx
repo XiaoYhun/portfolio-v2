@@ -31,9 +31,9 @@ export default function Home() {
           <div className="flex items-center gap-3.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://github.com/XiaoYhun.png"
+              src="/avatar.png"
               alt={profile.name}
-              className="h-14 w-14 shrink-0 rounded-[14px] border border-[rgba(255,255,255,.35)] bg-[rgba(255,255,255,.15)] object-cover dark:border-[rgba(34,211,238,.3)] dark:bg-[rgba(34,211,238,.08)]"
+              className="h-[88px] w-[88px] shrink-0 rounded-[20px] border border-[rgba(255,255,255,.35)] bg-[rgba(255,255,255,.15)] object-cover shadow-[0_8px_20px_rgba(0,0,0,.18)] dark:border-[rgba(34,211,238,.3)] dark:bg-[rgba(34,211,238,.08)]"
             />
             <div>
               <div className="font-sora text-[28px] font-extrabold leading-[1.1] dark:bg-[linear-gradient(100deg,#e0f2fe,#22d3ee_45%,#a78bfa)] dark:bg-clip-text dark:text-transparent dark:[-webkit-background-clip:text]">

@@ -88,7 +88,8 @@ export interface Project {
   url: string;
   link: string;
   tech: TechIcon[];
-  screenshot: string;
+  /** Optional — detail view simply omits the image block when there is none. */
+  screenshot?: string;
   company?: string;
 }
 
@@ -127,6 +128,63 @@ export const projects: Project[] = [
     tech: chip(["Next.js", "Tailwind", "React", "Vite"]),
     screenshot: "/projects/ymart.png",
   },
+  // Shipped at work — every remaining live URL listed in the CV, so the grid
+  // covers the whole link surface rather than just the "personal project" three.
+  {
+    name: "IP World Platform",
+    tag: "Web3",
+    desc: "SocialFi & memecoin launch platform on Story Protocol.",
+    detail:
+      "Turns memes, brands and cultural content into programmable, tradable on-chain assets. Wallet connectivity, smart-contract interactions and on-chain token-creation flows, with backend and Web3 infrastructure in Golang.",
+    url: "https://ip.world",
+    link: "ip.world",
+    tech: chip(["React", "Next.js", "Golang"]),
+    company: "IP World",
+  },
+  {
+    name: "Unibot Revshare",
+    tag: "Web3",
+    desc: "Revenue-share dashboard for Unibot holders.",
+    detail:
+      "Holder revenue-distribution dashboard, one of the Web3 frontends built and maintained with React and ethers.js across the Unibot suite.",
+    url: "https://revshare.unibot.app",
+    link: "revshare.unibot.app",
+    tech: chip(["React", "Tailwind", "Vite"]),
+    company: "UNIBOT",
+  },
+  {
+    name: "Unibot Perps",
+    tag: "Web3",
+    desc: "Perpetuals trading interface.",
+    detail:
+      "Perpetual-futures trading UI for the Unibot ecosystem, built with React and ethers.js on a clean, scalable ReactJS + TailwindCSS codebase.",
+    url: "https://perps.unibot.app",
+    link: "perps.unibot.app",
+    tech: chip(["React", "Tailwind", "Vite"]),
+    company: "UNIBOT",
+  },
+  {
+    name: "Unisol Swap",
+    tag: "Web3",
+    desc: "Swap product on Solana.",
+    detail:
+      "Token-swap frontend extending the Unibot product family onto Solana, sharing its React + TailwindCSS foundations.",
+    url: "https://unisol.app/swap",
+    link: "unisol.app/swap",
+    tech: chip(["React", "Tailwind", "Vite"]),
+    company: "UNIBOT",
+  },
+  {
+    name: "unibot.app",
+    tag: "Web3",
+    desc: "Main product site for the Telegram trading bot.",
+    detail:
+      "The primary product surface for Unibot's Telegram-native DeFi trading suite, spanning its EVM and Solana product lines.",
+    url: "https://unibot.app",
+    link: "unibot.app",
+    tech: chip(["React", "Tailwind", "Vite"]),
+    company: "UNIBOT",
+  },
 ];
 
 export const personalProjects: Project[] = [
@@ -157,9 +215,10 @@ export const companyProducts: Record<string, CompanyProduct[]> = {
     {
       name: "IP World Platform",
       desc: "SocialFi & memecoin launch platform on Story Protocol — wallet connectivity, smart-contract interactions and on-chain token-creation flows.",
-      url: "https://ip.world",
+      url: "https://ipworld.vercel.app",
       link: "ip.world",
       tech: chip(["React", "Next.js", "Golang"]),
+      projectName: "IP World Platform",
     },
   ],
   "UNIBOT": [
@@ -169,6 +228,7 @@ export const companyProducts: Record<string, CompanyProduct[]> = {
       url: "https://revshare.unibot.app",
       link: "revshare.unibot.app",
       tech: chip(["React", "Tailwind", "Vite"]),
+      projectName: "Unibot Revshare",
     },
     {
       name: "Unibot Perps",
@@ -176,6 +236,7 @@ export const companyProducts: Record<string, CompanyProduct[]> = {
       url: "https://perps.unibot.app",
       link: "perps.unibot.app",
       tech: chip(["React", "Tailwind", "Vite"]),
+      projectName: "Unibot Perps",
     },
     {
       name: "Unisol Swap",
@@ -183,6 +244,7 @@ export const companyProducts: Record<string, CompanyProduct[]> = {
       url: "https://unisol.app/swap",
       link: "unisol.app/swap",
       tech: chip(["React", "Tailwind", "Vite"]),
+      projectName: "Unisol Swap",
     },
     {
       name: "unibot.app",
@@ -190,6 +252,7 @@ export const companyProducts: Record<string, CompanyProduct[]> = {
       url: "https://unibot.app",
       link: "unibot.app",
       tech: chip(["React", "Tailwind", "Vite"]),
+      projectName: "unibot.app",
     },
   ],
   "Kyber Network": [
@@ -238,6 +301,9 @@ export interface Job {
   blurb: string;
   bullets: [string, string, string, string];
   tech: TechIcon[];
+  /** company website */
+  url: string;
+  link: string;
 }
 
 export const jobs: Job[] = [
@@ -254,6 +320,8 @@ export const jobs: Job[] = [
       "Owned major frontend tasks end-to-end; used Cursor & Claude Code to turn designs into production UI fast.",
     ],
     tech: chip(["React", "Next.js", "Golang"]),
+    url: "https://ipworld.vercel.app",
+    link: "ip.world",
   },
   {
     company: "UNIBOT",
@@ -268,6 +336,8 @@ export const jobs: Job[] = [
       "Collaborated with backend and smart-contract teams for seamless blockchain integration.",
     ],
     tech: chip(["React", "Tailwind", "Vite"]),
+    url: "https://unibot.app",
+    link: "unibot.app",
   },
   {
     company: "Kyber Network",
@@ -281,6 +351,8 @@ export const jobs: Job[] = [
       "Created animated, interactive UI components; integrated APIs and contracts via ethers.js.",
     ],
     tech: chip(["React", "TypeScript", "Vite"]),
+    url: "https://kyber.network",
+    link: "kyber.network",
   },
   {
     company: "2Clicks Solution",
@@ -294,5 +366,7 @@ export const jobs: Job[] = [
       "Shaped feature roadmaps and future project scope with the team.",
     ],
     tech: chip([".NET", "React", "Next.js"]),
+    url: "https://2clicksolutions.com",
+    link: "2clicksolutions.com",
   },
 ];
