@@ -158,6 +158,10 @@ export default function ProjectsMarquee({
   // the drag left it.
   const startDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     const vp = viewport.current;
+    // Any fresh press starts life as a click, whatever it turns into — and
+    // whatever the last one turned into. Reset before the guard below, or a
+    // touch tap that follows a mouse drag inherits its swallowed click.
+    drag.current.moved = false;
     if (!vp || e.pointerType !== "mouse" || e.button !== 0) return;
     drag.current = { active: true, startX: e.clientX, startScroll: vp.scrollLeft, moved: false };
     paused.current = true;
@@ -170,7 +174,17 @@ export default function ProjectsMarquee({
     const vp = viewport.current;
     if (!drag.current.active || !vp) return;
     const dx = e.clientX - drag.current.startX;
-    if (Math.abs(dx) > DRAG_SLOP) drag.current.moved = true;
+    // Under the slop this is still a click, so leave the row completely alone.
+    // Nudging it here is what broke opening a project: near the start of the loop
+    // a single rightward pixel sends scrollLeft negative, which wraps it a whole
+    // copy along. The row looks identical — that is the point of the seam — but
+    // the card under the cursor is now the *other* copy of it, so press and
+    // release land on two different elements and the browser fires the click on
+    // their common ancestor instead of on either card.
+    if (!drag.current.moved) {
+      if (Math.abs(dx) <= DRAG_SLOP) return;
+      drag.current.moved = true;
+    }
     const span = firstCopy.current?.offsetWidth ?? 0;
     const next = drag.current.startScroll - dx;
     // Wrap by one copy exactly as the rAF does, so dragging past either end of
