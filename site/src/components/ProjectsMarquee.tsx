@@ -63,6 +63,8 @@ export default function ProjectsMarquee({
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   /** The card the current press went down on — see openPressedCard. */
   const pressedCard = useRef<HTMLElement | null>(null);
+  /** True when that press landed on a control inside the card, which owns it. */
+  const pressedControl = useRef(false);
 
   // The seam-filler copy is aria-hidden, so nothing inside it may take focus —
   // tabbing into content hidden from assistive tech strands keyboard users.
@@ -166,6 +168,11 @@ export default function ProjectsMarquee({
     // touch tap that follows a mouse drag inherits its swallowed click.
     drag.current.moved = false;
     pressedCard.current = (e.target as HTMLElement).closest<HTMLElement>("[data-hero]");
+    // A card carries its own controls — the site link and the title button. This
+    // component opens on pointerup, which a click handler's stopPropagation
+    // cannot reach, so a press on the site link used to open the project *and*
+    // follow the link. Let the control have the press.
+    pressedControl.current = !!(e.target as HTMLElement).closest("a, button");
     if (!vp || e.pointerType !== "mouse" || e.button !== 0) return;
     drag.current = { active: true, startX: e.clientX, startScroll: vp.scrollLeft, moved: false };
     paused.current = true;
@@ -218,8 +225,10 @@ export default function ProjectsMarquee({
    */
   const openPressedCard = (e: React.PointerEvent<HTMLDivElement>) => {
     const down = pressedCard.current;
+    const onControl = pressedControl.current;
     pressedCard.current = null;
-    if (!down || drag.current.moved) return;
+    pressedControl.current = false;
+    if (!down || onControl || drag.current.moved) return;
     const up = (e.target as HTMLElement).closest<HTMLElement>("[data-hero]");
     if (up !== down) return; // released somewhere else — treat it as cancelled
     const id = down.dataset.hero;
@@ -241,6 +250,7 @@ export default function ProjectsMarquee({
 
   const cancelDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     pressedCard.current = null;
+    pressedControl.current = false;
     if (!drag.current.active) return;
     drag.current.active = false;
     document.body.style.cursor = "";
@@ -279,7 +289,7 @@ export default function ProjectsMarquee({
         onClick={() => onSelect(p.name)}
         className={`group relative flex h-full cursor-pointer flex-col gap-[7px] ${projectSurface} transition-all duration-[250ms] hover:-translate-y-[3px] hover:border-[#7c3aed] hover:shadow-[0_14px_32px_rgba(124,58,237,.16)] dark:hover:border-[rgba(34,211,238,.5)] dark:hover:shadow-[0_0_30px_rgba(34,211,238,.12)]`}
       >
-        <ProjectIdentity p={p} />
+        <ProjectIdentity p={p} onOpen={() => onSelect(p.name)} />
       </Hero>
     </motion.div>
   );
@@ -302,7 +312,10 @@ export default function ProjectsMarquee({
       // to call: they stop a drag from selecting text or peeling off an icon,
       // without touching the pointerdown the click target is derived from.
       onDragStart={(e) => e.preventDefault()}
-      className="-my-2 select-none overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      // cursor-grab: the row can be thrown by hand, which nothing else said. The
+      // cards keep cursor-pointer, so the affordance shows in the gaps between
+      // them and at the edges rather than fighting the click target.
+      className="-my-2 cursor-grab select-none overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {/* Not decorative: its ref is where the row's travel is restored. */}
       <span hidden ref={restoreTravel} />

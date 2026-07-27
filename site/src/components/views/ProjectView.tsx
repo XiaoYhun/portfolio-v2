@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Hero, NewInfo } from "@/components/Morph";
 import { ProjectIdentity, projectSurface } from "@/components/identities";
 import { BackBar, SectionLabel, TechChip } from "@/components/view-parts";
@@ -25,7 +24,7 @@ export default function ProjectView({
         <BackBar onBack={back}>
           <span className="font-sora text-[16px] font-bold text-[#0f172a] dark:text-[#f1f5fb]">Not found</span>
         </BackBar>
-        <div className="col-span-4 text-[12px] text-[#64748b] max-[1024px]:col-span-2 max-[640px]:col-span-1 dark:text-[#5a6b8c]">
+        <div className="col-span-4 text-[12px] text-[#64748b] max-[1024px]:col-span-2 max-[640px]:col-span-1 dark:text-[#7286ac]">
           That project could not be found.
         </div>
       </>
@@ -45,24 +44,9 @@ export default function ProjectView({
         style={{ borderRadius: 18 }}
         className={`col-span-4 flex flex-col gap-[7px] max-[1024px]:col-span-2 max-[640px]:col-span-1 ${projectSurface}`}
       >
-        <ProjectIdentity p={p} />
-
-        {p.screenshot && (
-          <NewInfo delay={0.12} className="mt-1.5">
-            <div
-              style={{ aspectRatio: "1200/630" }}
-              className="relative w-full overflow-hidden rounded-xl border border-[#e2e8f0] dark:border-[rgba(255,255,255,.08)]"
-            >
-              <motion.img
-                src={p.screenshot}
-                alt={p.name}
-                className="h-full w-full object-cover"
-                initial={{ scale: 1.08, filter: "blur(12px)" }}
-                animate={{ scale: 1, filter: "blur(0px)", transition: { duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 } }}
-              />
-            </div>
-          </NewInfo>
-        )}
+        {/* The screenshot is part of the identity now, so it arrives by growing
+            with the card rather than fading in underneath it. */}
+        <ProjectIdentity p={p} priority />
 
         <NewInfo delay={0.22} className="text-[13px] leading-[1.6] text-[#475569] dark:text-[#8da2c0]">
           {p.detail}

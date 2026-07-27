@@ -2,7 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { createContext, useCallback, useContext, useLayoutEffect, useRef } from "react";
-import { motion, useIsPresent } from "motion/react";
+import { motion, useIsPresent, useReducedMotion } from "motion/react";
 
 /**
  * Outer ⇄ inner morphing, done on the real element (no clones, no crossfade).
@@ -130,6 +130,7 @@ export function Hero({
   const isPresent = useIsPresent();
   const carried = useContext(CarriedHero);
   const carriedAway = !isPresent && carried === id;
+  const reduceMotion = useReducedMotion();
 
   const elRef = useRef<HTMLDivElement | null>(null);
 
@@ -152,6 +153,14 @@ export function Hero({
     // to animate. We delete only once the morph actually finishes.
     if (!entry || performance.now() - entry.at > 800) {
       if (entry) pendingFrom.delete(id);
+      return;
+    }
+    // A flight across the page is exactly the kind of motion reduced-motion asks
+    // to be spared. The destination is already rendered in place, so dropping
+    // the animation costs nothing but the transition. Consumed, not left
+    // pending, or the next mount of this id would pick up a stale rect.
+    if (reduceMotion) {
+      pendingFrom.delete(id);
       return;
     }
     // A duplicated list mounts several copies of this id in the same commit, and
@@ -218,7 +227,7 @@ export function Hero({
       // in place so the surviving remount re-runs the morph.
       release();
     };
-  }, [id]);
+  }, [id, reduceMotion]);
 
   return (
     <div
@@ -249,10 +258,11 @@ export function NewInfo({
   className?: string;
   children: ReactNode;
 }) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 12 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay } }}
     >
       {children}

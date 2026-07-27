@@ -86,7 +86,7 @@ export default function TechView({
                   key={j.company}
                   from="left"
                   delay={0.32 + i * 0.07}
-                  className="flex items-center justify-between gap-3 rounded-[13px] border border-[#e2e8f0] bg-white p-[10px_14px] dark:border-[rgba(255,255,255,.09)] dark:bg-[rgba(255,255,255,.04)] dark:backdrop-blur-[8px]"
+                  className="flex items-center justify-between gap-3 rounded-[13px] border border-[#e2e8f0] bg-white p-[10px_14px] max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-1 dark:border-[rgba(255,255,255,.09)] dark:bg-[rgba(255,255,255,.04)] dark:backdrop-blur-[8px]"
                 >
                   <div className="flex items-baseline gap-1.5">
                     <button
@@ -100,7 +100,7 @@ export default function TechView({
                       · {j.role}
                     </span>
                   </div>
-                  <span className="font-mono whitespace-nowrap text-[10.5px] font-medium text-[#94a3b8] dark:text-[#5a6b8c]">
+                  <span className="font-mono whitespace-nowrap text-[10.5px] font-medium text-[#64748b] dark:text-[#7286ac]">
                     {j.period}
                   </span>
                 </SlideIn>
@@ -108,7 +108,7 @@ export default function TechView({
             </div>
           </div>
         ) : matchingProjects.length === 0 ? (
-          <div className="text-[12px] text-[#64748b] dark:text-[#5a6b8c]">
+          <div className="text-[12px] text-[#64748b] dark:text-[#7286ac]">
             No projects or roles use {tech} yet.
           </div>
         ) : null}

@@ -2,9 +2,15 @@
 
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { TechIcon } from "@/data/content";
 import { toolbelt } from "@/data/content";
+
+// Re-exported so the views keep importing their class strings from one place;
+// they live in a plain module because the server-rendered page shell needs them
+// too and this file is "use client".
+import { labelClass, linkPillClass } from "@/components/ui/classes";
+export { labelClass, linkPillClass };
 
 /**
  * Direction of the last view-stack navigation. On "back" every entrance
@@ -12,16 +18,19 @@ import { toolbelt } from "@/data/content";
  * settled instead of fading-in targets.
  */
 export const NavDirection = createContext<"push" | "back">("push");
-export const useSkipEntrance = () => useContext(NavDirection) === "back";
 
-export const labelClass =
-  "font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-[#64748b] dark:text-[#22d3ee]";
+/**
+ * Whether this render should skip its entrance animation — on a back
+ * navigation, and whenever the reader has asked for reduced motion. Every
+ * entrance in the project goes through here, so honouring the preference is a
+ * single decision rather than a per-component one.
+ */
+export function useSkipEntrance() {
+  const reduceMotion = useReducedMotion();
+  return useContext(NavDirection) === "back" || !!reduceMotion;
+}
 
 export const springPop = { type: "spring", stiffness: 340, damping: 26 } as const;
-
-/** Stand-out pill for external website links — tinted pill that fills with the brand gradient on hover. */
-export const linkPillClass =
-  "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[rgba(79,70,229,.3)] bg-[linear-gradient(135deg,#eff6ff,#f5f3ff)] px-2.5 py-[3px] text-[11px] font-bold text-[#4f46e5] no-underline transition-all duration-200 hover:-translate-y-[1px] hover:border-transparent hover:bg-[linear-gradient(135deg,#2563eb,#7c3aed)] hover:text-white hover:no-underline hover:shadow-[0_6px_16px_rgba(124,58,237,.35)] dark:border-[rgba(34,211,238,.35)] dark:bg-none dark:bg-[rgba(34,211,238,.08)] dark:text-[#22d3ee] dark:hover:bg-none dark:hover:bg-[#22d3ee] dark:hover:text-[#04070f] dark:hover:shadow-[0_0_20px_rgba(34,211,238,.35)]";
 
 /** Shared-element (layoutId) morphs — critically damped, no overshoot. */
 export const layoutSnap = { type: "spring", bounce: 0, duration: 0.85 } as const;
@@ -76,6 +85,11 @@ export function SlideIn({
   );
 }
 
+/**
+ * A section's name. A heading rather than a styled div: these labels are the
+ * only structure the page has, so they are what a screen-reader user navigates
+ * by. Level 2 throughout — every one of them sits directly under the page's h1.
+ */
 export function SectionLabel({
   children,
   className = "",
@@ -83,7 +97,7 @@ export function SectionLabel({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={`${labelClass} ${className}`}>{children}</div>;
+  return <h2 className={`${labelClass} ${className}`}>{children}</h2>;
 }
 
 /** Light stagger wrapper for entering view sections. */
@@ -198,6 +212,7 @@ export function Toolbelt({
               <button
                 type="button"
                 onClick={() => onSelect(t.l)}
+                aria-pressed={isActive}
                 className={`relative flex w-[70px] flex-col items-center gap-1.5 rounded-xl p-[8px_2px] transition-all duration-200 hover:-translate-y-[3px] hover:bg-white hover:shadow-[0_6px_16px_rgba(20,40,90,.1)] dark:hover:bg-[rgba(34,211,238,.08)] dark:hover:shadow-none ${
                   isActive ? "-translate-y-[3px]" : ""
                 }`}
@@ -214,7 +229,7 @@ export function Toolbelt({
                 <img src={t.ia} alt={t.l} className="relative h-[30px] w-[30px] object-contain dark:hidden" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={t.ib} alt={t.l} className="relative hidden h-[30px] w-[30px] object-contain dark:block" />
-                <span className="font-mono relative whitespace-nowrap text-center text-[9px] font-medium text-[#475569] dark:text-[#5a6b8c]">
+                <span className="font-mono relative whitespace-nowrap text-center text-[9px] font-medium text-[#475569] dark:text-[#7286ac]">
                   {t.l}
                 </span>
               </button>

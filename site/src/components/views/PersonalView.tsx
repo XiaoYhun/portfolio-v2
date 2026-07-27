@@ -29,15 +29,23 @@ export default function PersonalView({
         style={{ borderRadius: 18 }}
         className={`col-span-4 flex flex-col gap-[7px] max-[1024px]:col-span-2 max-[640px]:col-span-1 ${personalSurface}`}
       >
-        <PersonalIdentity />
+        <PersonalIdentity /> {/* no onOpen: this view is the "view all" */}
 
         <NewInfo delay={0.15} className="mt-2 grid grid-cols-3 gap-3 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
           {allPersonal.map((p, i) => (
             <ProjectCard
               key={p.name}
               p={p}
+              // This grid lists the same projects the home marquee does. Giving
+              // its cards the shared hero id would tie the two together: the
+              // morph is a container transform between one card and its detail,
+              // and with two claimants for the same id the flight back can land
+              // on the home card rather than the one actually opened here. Same
+              // reason TechView opts out — a list of projects is not the place
+              // the card "lives".
+              morph={false}
               delay={0.2 + i * 0.07}
-              onClick={() => push({ kind: "project", name: p.name }, `proj-card-${p.name}`)}
+              onClick={() => push({ kind: "project", name: p.name })}
             />
           ))}
           <div className="flex h-full flex-col justify-center gap-2 rounded-[18px] bg-[#0f172a] p-[16px_18px] text-white dark:border dark:border-[rgba(255,255,255,.09)] dark:bg-[rgba(255,255,255,.04)] dark:backdrop-blur-[8px]">

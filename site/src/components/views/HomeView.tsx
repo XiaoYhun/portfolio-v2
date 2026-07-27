@@ -3,7 +3,7 @@
 import ProjectsMarquee from "@/components/ProjectsMarquee";
 import { Hero } from "@/components/Morph";
 import { CompanyIdentity, PersonalIdentity, companySurface, personalSurface } from "@/components/identities";
-import { Reveal, SlideIn, Toolbelt } from "@/components/view-parts";
+import { Reveal, SectionLabel, SlideIn, Toolbelt } from "@/components/view-parts";
 import type { View } from "@/components/view-types";
 import { jobs } from "@/data/content";
 
@@ -35,7 +35,12 @@ export default function HomeView({ push }: { push: (v: View, morphId?: string) =
         </SlideIn>
       ))}
 
-      <div className="col-span-4 max-[1024px]:col-span-2 max-[640px]:col-span-1">
+      {/* Named like every other block on the page — the travelling row was the
+          only section arriving without saying what it was. */}
+      <div className="col-span-4 flex flex-col gap-2.5 max-[1024px]:col-span-2 max-[640px]:col-span-1">
+        <Reveal delay={0.36}>
+          <SectionLabel>PROJECTS</SectionLabel>
+        </Reveal>
         <ProjectsMarquee onSelect={(name) => push({ kind: "project", name }, `proj-card-${name}`)} baseDelay={0.4} />
       </div>
 
@@ -46,7 +51,7 @@ export default function HomeView({ push }: { push: (v: View, morphId?: string) =
           onClick={() => push({ kind: "personal" }, "personal-row")}
           className={`group cursor-pointer ${personalSurface} transition-all duration-200 hover:-translate-y-[2px] hover:border-[#7c3aed] dark:hover:border-[rgba(34,211,238,.5)]`}
         >
-          <PersonalIdentity />
+          <PersonalIdentity onOpen={() => push({ kind: "personal" }, "personal-row")} />
         </Hero>
       </Reveal>
     </>

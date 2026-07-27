@@ -103,7 +103,7 @@ export const projects: Project[] = [
     url: "https://xno.vn/",
     link: "xno.vn",
     tech: chip(["Next.js", "TypeScript", "TanStack", "Tailwind"]),
-    screenshot: "/projects/xno.png",
+    screenshot: "/projects/xno.webp",
   },
   {
     name: "KyberSwap Landing Page",
@@ -114,7 +114,7 @@ export const projects: Project[] = [
     url: "https://kyberswap-landingpage.vercel.app/",
     link: "kyberswap-landingpage.vercel.app",
     tech: chip(["React", "Framer", "Vite"]),
-    screenshot: "/projects/kyberswap.png",
+    screenshot: "/projects/kyberswap.webp",
     company: "Kyber Network",
   },
   {
@@ -126,7 +126,7 @@ export const projects: Project[] = [
     url: "https://ymart-delta.vercel.app/",
     link: "ymart-delta.vercel.app",
     tech: chip(["Next.js", "Tailwind", "React", "Vite"]),
-    screenshot: "/projects/ymart.png",
+    screenshot: "/projects/ymart.webp",
   },
   // Shipped at work — every remaining live URL listed in the CV, so the grid
   // covers the whole link surface rather than just the "personal project" three.
@@ -139,6 +139,7 @@ export const projects: Project[] = [
     url: "https://ip.world",
     link: "ip.world",
     tech: chip(["React", "Next.js", "Golang"]),
+    screenshot: "/projects/ipworld.webp",
     company: "IP World",
   },
   {
@@ -150,6 +151,7 @@ export const projects: Project[] = [
     url: "https://revshare.unibot.app",
     link: "revshare.unibot.app",
     tech: chip(["React", "Tailwind", "Vite"]),
+    screenshot: "/projects/unibot-revshare.webp",
     company: "UNIBOT",
   },
   {
@@ -161,6 +163,7 @@ export const projects: Project[] = [
     url: "https://perps.unibot.app",
     link: "perps.unibot.app",
     tech: chip(["React", "Tailwind", "Vite"]),
+    screenshot: "/projects/unibot-perps.webp",
     company: "UNIBOT",
   },
   {
@@ -172,6 +175,7 @@ export const projects: Project[] = [
     url: "https://unisol.app/swap",
     link: "unisol.app/swap",
     tech: chip(["React", "Tailwind", "Vite"]),
+    screenshot: "/projects/unisol-swap.webp",
     company: "UNIBOT",
   },
   {
@@ -183,6 +187,7 @@ export const projects: Project[] = [
     url: "https://unibot.app",
     link: "unibot.app",
     tech: chip(["React", "Tailwind", "Vite"]),
+    screenshot: "/projects/unibot.webp",
     company: "UNIBOT",
   },
 ];
@@ -197,7 +202,7 @@ export const personalProjects: Project[] = [
     url: "https://github.com/XiaoYhun",
     link: "github.com/XiaoYhun",
     tech: chip(["Next.js", "TypeScript", "Tailwind", "Framer"]),
-    screenshot: "/projects/portfolio.png",
+    screenshot: "/projects/portfolio.webp",
   },
 ];
 

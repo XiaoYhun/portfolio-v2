@@ -15,7 +15,7 @@ export default function FloatingCTA() {
           Open to Senior Frontend / Fullstack Roles
         </span>
       </div>
-      <div className="text-[12px] text-[#94a3b8] max-[640px]:hidden dark:text-[#5a6b8c]">
+      <div className="text-[12px] text-[#94a3b8] max-[640px]:hidden dark:text-[#7286ac]">
         Coding · Travelling · Movies
       </div>
       <a

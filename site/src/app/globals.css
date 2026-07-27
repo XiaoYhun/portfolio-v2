@@ -10,6 +10,11 @@
 /* hide the page scrollbar but keep the page scrollable */
 html {
   scrollbar-width: none;
+  /* The dark aurora orbs are deliberately wider than the content column, and on
+     a phone they reach past the viewport. `clip` rather than `hidden`: hidden
+     would make the root a scroll container and break the fixed CTA and the
+     morph's fixed-position flight. */
+  overflow-x: clip;
 }
 
 html::-webkit-scrollbar {
@@ -32,6 +37,19 @@ html.dark body {
 }
 
 @layer base {
+  /* One focus ring for the whole site. The UA default is legible but reads as
+     unstyled next to these surfaces, and several controls (cards, pills) are
+     rounded far enough that a square outline looks broken. */
+  :where(a, button, [tabindex]):focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .dark :where(a, button, [tabindex]):focus-visible {
+    outline-color: #22d3ee;
+  }
+
   a {
     color: #4f46e5;
     text-decoration: none;
