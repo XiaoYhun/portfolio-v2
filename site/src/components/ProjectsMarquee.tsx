@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Hero } from "@/components/Morph";
+import { Hero, setMorphSource } from "@/components/Morph";
 import { ProjectIdentity, projectSurface } from "@/components/identities";
 import { useSkipEntrance } from "@/components/view-parts";
 import { projects, type Project } from "@/data/content";
@@ -61,6 +61,8 @@ export default function ProjectsMarquee({
   const secondCopy = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  /** The card the current press went down on — see openPressedCard. */
+  const pressedCard = useRef<HTMLElement | null>(null);
 
   // The seam-filler copy is aria-hidden, so nothing inside it may take focus —
   // tabbing into content hidden from assistive tech strands keyboard users.
@@ -155,19 +157,23 @@ export default function ProjectsMarquee({
   // panning — it has momentum and rubber-banding we would only approximate; this
   // gives the mouse the same reach. The rAF loop is paused for the duration and
   // re-reads scrollLeft when it resumes, so the strip carries on from wherever
-  // the drag left it.
+  // the drag left it. The pointer is only captured once the press becomes a real
+  // drag, so a plain press on a card is left entirely alone.
   const startDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     const vp = viewport.current;
     // Any fresh press starts life as a click, whatever it turns into — and
     // whatever the last one turned into. Reset before the guard below, or a
     // touch tap that follows a mouse drag inherits its swallowed click.
     drag.current.moved = false;
+    pressedCard.current = (e.target as HTMLElement).closest<HTMLElement>("[data-hero]");
     if (!vp || e.pointerType !== "mouse" || e.button !== 0) return;
     drag.current = { active: true, startX: e.clientX, startScroll: vp.scrollLeft, moved: false };
     paused.current = true;
-    vp.setPointerCapture(e.pointerId);
-    document.body.style.cursor = "grabbing";
-    e.preventDefault(); // no text selection while hauling a row of cards around
+    // Deliberately no preventDefault and no pointer capture here. Both change how
+    // the browser decides what was clicked — preventDefault suppresses the
+    // mousedown the click target is derived from, and a capture retargets the
+    // compatibility mouse events at the capturing element. Until this press has
+    // passed the slop it is a click on a card, not a drag, so it gets neither.
   };
 
   const moveDrag = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -184,6 +190,11 @@ export default function ProjectsMarquee({
     if (!drag.current.moved) {
       if (Math.abs(dx) <= DRAG_SLOP) return;
       drag.current.moved = true;
+      // Now it really is a drag, so take the pointer: the row should keep
+      // tracking the hand even once it leaves the strip. Safe to do here —
+      // there is no longer a click to protect.
+      vp.setPointerCapture(e.pointerId);
+      document.body.style.cursor = "grabbing";
     }
     const span = firstCopy.current?.offsetWidth ?? 0;
     const next = drag.current.startScroll - dx;
@@ -192,7 +203,44 @@ export default function ProjectsMarquee({
     vp.scrollLeft = span > 0 ? ((next % span) + span) % span : next;
   };
 
+  /**
+   * Opens the card the press started and ended on, without waiting for `click`.
+   *
+   * On a strip that moves and can be dragged, `click` is the least dependable
+   * signal there is: the browser derives its target from the mousedown/mouseup
+   * pair, and anything that perturbs either — a wrap that swaps in the duplicate
+   * copy, a pointer capture, a suppressed mousedown — silently retargets it to
+   * some ancestor and the card never hears about it. The strip already knows
+   * exactly which card went down and whether the hand moved, so it decides.
+   * Cards keep their own onClick for the keyboard and for anything that reaches
+   * them normally; a double-fire is harmless, since pushing the view already
+   * open is a no-op.
+   */
+  const openPressedCard = (e: React.PointerEvent<HTMLDivElement>) => {
+    const down = pressedCard.current;
+    pressedCard.current = null;
+    if (!down || drag.current.moved) return;
+    const up = (e.target as HTMLElement).closest<HTMLElement>("[data-hero]");
+    if (up !== down) return; // released somewhere else — treat it as cancelled
+    const id = down.dataset.hero;
+    const name = id?.replace(/^proj-card-/, "");
+    if (!id || !name) return;
+    setMorphSource(id, down); // fly from the copy under the hand, not the tidiest one
+    onSelect(name);
+  };
+
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    openPressedCard(e);
+    if (!drag.current.active) return;
+    drag.current.active = false;
+    document.body.style.cursor = "";
+    if (viewport.current?.hasPointerCapture(e.pointerId)) {
+      viewport.current.releasePointerCapture(e.pointerId);
+    }
+  };
+
+  const cancelDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    pressedCard.current = null;
     if (!drag.current.active) return;
     drag.current.active = false;
     document.body.style.cursor = "";
@@ -246,11 +294,15 @@ export default function ProjectsMarquee({
       onPointerDown={startDrag}
       onPointerMove={moveDrag}
       onPointerUp={endDrag}
-      onPointerCancel={endDrag}
+      onPointerCancel={cancelDrag}
       onClickCapture={swallowDragClick}
       // -my-2/py-2: room to paint the cards' hover lift and shadow without the
       // scroll container clipping them, at no cost to the surrounding rhythm.
-      className="-my-2 overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      // select-none + onDragStart replace the preventDefault that startDrag used
+      // to call: they stop a drag from selecting text or peeling off an icon,
+      // without touching the pointerdown the click target is derived from.
+      onDragStart={(e) => e.preventDefault()}
+      className="-my-2 select-none overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {/* Not decorative: its ref is where the row's travel is restored. */}
       <span hidden ref={restoreTravel} />

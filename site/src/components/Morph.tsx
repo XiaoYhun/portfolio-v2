@@ -83,6 +83,16 @@ function bestCopy(id: string): HTMLElement | null {
  */
 let clickedSource: { id: string; rect: Rect; at: number } | null = null;
 
+/**
+ * Nominate the exact element a morph should fly from. Hero calls this from its
+ * own click handler; a list that decides selection itself — the projects strip
+ * activates on pointerup rather than click — calls it with the element it acted
+ * on, so the flight still starts from the copy under the hand.
+ */
+export function setMorphSource(id: string, el: HTMLElement) {
+  clickedSource = { id, rect: rectOf(el), at: performance.now() };
+}
+
 /** Snapshot a hero's current rect (while still mounted) so its counterpart can fly from it. */
 export function armMorph(id: string): boolean {
   const hit = clickedSource;
@@ -126,7 +136,7 @@ export function Hero({
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       // Record which copy was pressed before the navigation arms the morph.
-      clickedSource = { id, rect: rectOf(e.currentTarget), at: performance.now() };
+      setMorphSource(id, e.currentTarget);
       onClick?.(e);
     },
     [id, onClick]
